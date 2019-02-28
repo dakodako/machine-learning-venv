@@ -23,52 +23,49 @@ from matplotlib import pyplot as plt
 
 #%%
 
-ff = glob.glob('/Users/chid/Downloads/973770/MNINonLinear/*')
+ff = glob.glob('dataset/T1/*')
 
-ff[0]
+print(ff)
 
-len(ff)
+print(len(ff))
 
-'''
-Now you are all set to load the 3D volumes using nibabel. 
-Note that when you load a Nifti format volume, Nibabel does not load the image array. 
-It waits until you ask for the array data. The normal way to ask for the array data is to call the get_data() method.
 
-Since you want the 2D slices instead of 3D, you will initialise a list in which; 
-every time you read a volume, you will iterate over all the complete 207 slices of the 3D volume and append each slice one by one in to a list.
-'''
+#Now you are all set to load the 3D volumes using nibabel. 
+
+#Note that when you load a Nifti format volume, Nibabel does not load the image array. 
+#It waits until you ask for the array data. The normal way to ask for the array data is to call the get_data() method.
+
+#Since you want the 2D slices instead of 3D, you will initialise a list in which; 
+#every time you read a volume, you will iterate over all the complete 207 slices of the 3D volume and append each slice one by one in to a list.
+
 #%%
 images = []
-a = nib.load(ff[0])
-a = a.get_data()
-a.shape
+for f in range(len(ff)):
+    a = nib.load(ff[f])
+    a = a.get_data()
+    mid = a.shape[1]/2
+    print(int(mid))
+    a = a[:,43:94,:]
+    for i in range(a.shape[1]):
+        images.append((a[:,i,:]))
+print (a.shape)
 
-
-'''
-136 means there are 136 slices in the 3D volume, we are going to use the middle 50 slices
-'''
-
-a = a[:,43:94,:]
-for i in range(a.shape[1]):
-    images.append((a[:,i,:]))
-
-
-print(a.shape)
+print(a.shape[1])
 
 #extrace one slice out
 
 a[:,0,:].shape
 #%%
 images = np.asarray(images)
-images.shape
+print(images.shape[1])
 images = images.reshape(-1,113,113,1)
-
+images.shape
 #%%
 m = np.max(images)
 mi = np.min(images)
 images = (images - mi)/(m - mi)
 #%%
-temp = np.zeros([51,116,116,1])
+temp = np.zeros([459,116,116,1])
 temp[:,3:,3:,:] = images
 
 images = temp
