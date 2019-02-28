@@ -20,19 +20,21 @@ from matplotlib import pyplot as plt
 
 filepath = 'dataset/T1/*'
 filename = '/Users/chid/machine-learning-venv/dataset/T1/943862_T1w_restore.1.60.nii.gz'
-def open_image(filename):
+#%%
+def open_image(filename, padding = True, pad_size = 3):
     image = []
     a = nib.load(filename)
     a = a.get_data()
     mid = int(a.shape[1]/2)
-    a = a[:,mid-25:mid + 26,:]
+    a = a[:,mid-25:mid + 25,:]
     for i in range(a.shape[1]):
             image.append((a[:,i,:]))
     image = np.asarray(image)
     image = image.reshape(-1,image.shape[1],image.shape[2],1)
-    temp = np.zeros([image.shape[0],image.shape[1],image.shape[2],1])
-    temp[:,3:,3:,:] = image
-    image = temp
+    if padding == True:
+        temp = np.zeros([image.shape[0],image.shape[1] + pad_size,image.shape[2] +pad_size,1])
+        temp[:,pad_size:,pad_size:,:] = image
+        image = temp
     m = np.max(image)
     mi = np.min(image)
     image = (image - mi)/(m - mi)
@@ -40,7 +42,7 @@ def open_image(filename):
 def extract_a_slice(index, volume):
     s = volume[index,:,:,:]
     return s
-def open_images(filepath):
+def open_images(filepath, padding = True, pad_size = 3):
     images = []
     ff = glob.glob(filepath)
     for f in range(len(ff)):
@@ -48,14 +50,15 @@ def open_images(filepath):
         a = a.get_data()
         # extracting the central 50 slices
         mid = int(a.shape[1]/2)
-        a = a[:,mid-25:mid + 26,:]
+        a = a[:,mid-25:mid + 25,:]
         for i in range(a.shape[1]):
             images.append((a[:,i,:]))
     images = np.asarray(images)
     images = images.reshape(-1,images.shape[1],images.shape[2],1)
-    temp = np.zeros([images.shape[0],images.shape[1],images.shape[2],1])
-    temp[:,3:,3:,:] = images
-    images = temp
+    if padding == True:
+        temp = np.zeros([images.shape[0],images.shape[1] + pad_size,images.shape[2] + pad_size,1])
+        temp[:,3:,3:,:] = images
+        images = temp
     m = np.max(images)
     mi = np.min(images)
     images = (images - mi)/(m - mi)
