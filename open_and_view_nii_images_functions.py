@@ -65,14 +65,14 @@ def open_images(filepath, padding = True, pad_size = 3):
     return images
 
 #%%
-images = open_image(filename)
-s = extract_a_slice(1, images)
-print(images.shape)
-print(s.shape)
-plt.figure(figsize = [5,5])
-curr_img = np.reshape(s, (113,113))
-plt.imshow(curr_img, cmap='gray')
-plt.show()
+#images = open_image(filename)
+#s = extract_a_slice(1, images)
+#print(images.shape)
+#print(s.shape)
+#plt.figure(figsize = [5,5])
+#curr_img = np.reshape(s, (113,113))
+#plt.imshow(curr_img, cmap='gray')
+#plt.show()
 
 '''
 images = open_images(filepath)
