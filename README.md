@@ -13,3 +13,8 @@ https://towardsdatascience.com/tensorflow-gpu-installation-made-easy-use-conda-i
 #### what is approximate inference
 
 https://www.quora.com/What-is-approximate-inference
+
+
+### Image reconstruction
+
+https://www.datacamp.com/community/tutorials/reconstructing-brain-images-deep-learning
