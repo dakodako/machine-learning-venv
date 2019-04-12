@@ -7,3 +7,9 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environme
 ### installing gpu supported tensorflow
 
 https://towardsdatascience.com/tensorflow-gpu-installation-made-easy-use-conda-instead-of-pip-52e5249374bc
+
+### Some machine learning terminologies explained
+
+#### what is approximate inference
+
+https://www.quora.com/What-is-approximate-inference
