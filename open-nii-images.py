@@ -25,9 +25,8 @@ from matplotlib import pyplot as plt
 
 ff = glob.glob('dataset/T1/*')
 
-print(ff)
 
-print(len(ff))
+
 
 
 #Now you are all set to load the 3D volumes using nibabel. 
@@ -44,20 +43,18 @@ for f in range(len(ff)):
     a = nib.load(ff[f])
     a = a.get_data()
     mid = a.shape[1]/2
-    print(int(mid))
     a = a[:,43:94,:]
     for i in range(a.shape[1]):
         images.append((a[:,i,:]))
-print (a.shape)
 
-print(a.shape[1])
+
+
 
 #extrace one slice out
 
 a[:,0,:].shape
 #%%
 images = np.asarray(images)
-print(images.shape[1])
 images = images.reshape(-1,113,113,1)
 images.shape
 #%%
@@ -65,7 +62,7 @@ m = np.max(images)
 mi = np.min(images)
 images = (images - mi)/(m - mi)
 #%%
-temp = np.zeros([459,116,116,1])
+temp = np.zeros([51*12,116,116,1])
 temp[:,3:,3:,:] = images
 
 images = temp
@@ -92,12 +89,12 @@ plt.imshow(curr_img, cmap='gray')
 
 # the convolutional autoencoder
 
-batch_size = 128
+batch_size = 40
 epochs = 1
 inChannel = 1
 x, y = 116, 116
 input_img = Input(shape = (x, y, inChannel))
-print(input_img.shape)
+
 # there are two parts in the autoencoder: encoder and decoder
 
 #%% encoder
@@ -105,48 +102,51 @@ print(input_img.shape)
 # the encoder has three convolution layers
 # each convolution layer is followed by a batch normalization layer
 # max-pooling layer is used after the first and second convolution blocks
-conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
-conv1 = BatchNormalization()(conv1)
-conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(conv1)
-conv1 = BatchNormalization()(conv1)
-pool1 = MaxPooling2D(pool_size=(2, 2))(conv1) 
+def autoencoder(input_img):
+	conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
+	conv1 = BatchNormalization()(conv1)
+	conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(conv1)
+	conv1 = BatchNormalization()(conv1)
+	pool1 = MaxPooling2D(pool_size=(2, 2))(conv1) 
 
-conv2 = Conv2D(64, (3, 3), activation='relu', padding='same')(pool1) 
-conv2 = BatchNormalization()(conv2)
-conv2 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv2)
-conv2 = BatchNormalization()(conv2)
-pool2 = MaxPooling2D(pool_size=(2, 2))(conv2) 
-conv3 = Conv2D(128, (3, 3), activation='relu', padding='same')(pool2) 
-conv3 = BatchNormalization()(conv3)
-conv3 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv3)
-conv3 = BatchNormalization()(conv3)
+	conv2 = Conv2D(64, (3, 3), activation='relu', padding='same')(pool1) 
+	conv2 = BatchNormalization()(conv2)
+	conv2 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv2)
+	conv2 = BatchNormalization()(conv2)
+	pool2 = MaxPooling2D(pool_size=(2, 2))(conv2) 
+	conv3 = Conv2D(128, (3, 3), activation='relu', padding='same')(pool2) 
+	conv3 = BatchNormalization()(conv3)
+	conv3 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv3)
+	conv3 = BatchNormalization()(conv3)
 
 
 #%%decoder
-conv4 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv3) 
-conv4 = BatchNormalization()(conv4)
-conv4 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv4)
-conv4 = BatchNormalization()(conv4)
-up1 = UpSampling2D((2,2))(conv4) 
-conv5 = Conv2D(32, (3, 3), activation='relu', padding='same')(up1) 
-conv5 = BatchNormalization()(conv5)
-conv5 = Conv2D(32, (3, 3), activation='relu', padding='same')(conv5)
-conv5 = BatchNormalization()(conv5)
-up2 = UpSampling2D((2,2))(conv5) 
-decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(up2) 
+	conv4 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv3) 
+	conv4 = BatchNormalization()(conv4)
+	conv4 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv4)
+	conv4 = BatchNormalization()(conv4)
+	up1 = UpSampling2D((2,2))(conv4) 
+	conv5 = Conv2D(32, (3, 3), activation='relu', padding='same')(up1) 
+	conv5 = BatchNormalization()(conv5)
+	conv5 = Conv2D(32, (3, 3), activation='relu', padding='same')(conv5)
+	conv5 = BatchNormalization()(conv5)
+	up2 = UpSampling2D((2,2))(conv5) 
+	decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(up2) 
+	return decoded
 
 
 #%%
-autoencoder = Model(input_img, decoded)
+autoencoder = Model(input_img, autoencoder(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 
 autoencoder.summary()
 
 
 autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground))
-'''
+
 loss = autoencoder_train.history['loss']
 val_loss = autoencoder_train.history['val_loss']
+'''
 epochs = range(1)
 plt.figure()
 plt.plot(epochs, loss, 'bo', label = 'Training loss')
@@ -155,3 +155,24 @@ plt.title('Training and validation loss')
 plt.legend()
 plt.show()
 '''
+#autoencoder = autoencoder.save_weights('autoencoder_mri.h5')
+#autoencoder = Model(input_img, autoencoder(input_img))
+#autoencoder.load_weights('autoencoder_mri.h5')
+
+pred = autoencoder.predict(valid_X)
+
+plt.figure(figsize=(20, 4))
+print("Test Images")
+for i in range(5):
+    plt.subplot(1, 5, i+1)
+    plt.imshow(valid_ground[i, ..., 0], cmap='gray')
+plt.show()    
+plt.figure(figsize=(20, 4))
+print("Reconstruction of Test Images")
+for i in range(5):
+    plt.subplot(1, 5, i+1)
+    plt.imshow(pred[i, ..., 0], cmap='gray')  
+plt.show()
+
+
+
