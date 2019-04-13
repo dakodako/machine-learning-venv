@@ -49,7 +49,7 @@ p3 = MaxPooling2D((2,2), strides = (2,2))(c3)
 c4 = Conv2D(512, (3,3), activation = 'relu')(p3)
 c4 = Dropout(0.1)(c4) # ????
 c4 = Conv2D(512, (3,3), activation = 'relu')(c4)
-p4 = MaxPooling2D((2,2), strides = (2,2))(c3)
+p4 = MaxPooling2D((2,2), strides = (2,2))(c4)
 
 c5 = Conv2D(1024, (3,3),activation = 'relu')(p4)
 c5 = Dropout(0.1)(c5) # ????
