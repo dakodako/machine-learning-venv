@@ -19,7 +19,7 @@ from sklearn.model_selection import train_test_split
 import math
 import glob
 from matplotlib import pyplot as plt
-%matplotlib inline
+#%matplotlib inline
 
 #%%
 
@@ -92,8 +92,8 @@ plt.imshow(curr_img, cmap='gray')
 
 # the convolutional autoencoder
 
-batch_size = 64
-epochs = 50
+batch_size = 128
+epochs = 1
 inChannel = 1
 x, y = 116, 116
 input_img = Input(shape = (x, y, inChannel))
@@ -141,3 +141,17 @@ autoencoder = Model(input_img, decoded)
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 
 autoencoder.summary()
+
+
+autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground))
+'''
+loss = autoencoder_train.history['loss']
+val_loss = autoencoder_train.history['val_loss']
+epochs = range(1)
+plt.figure()
+plt.plot(epochs, loss, 'bo', label = 'Training loss')
+plt.plot(epochs, val_loss, 'b', label = 'Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+plt.show()
+'''
