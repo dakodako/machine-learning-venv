@@ -147,7 +147,7 @@ def unet(input_img):
 	c9 = Conv2D(64,(3,3), activation = 'relu')(u9)
 	c9 = Dropout(0.1)(c9)
 	c9 = Conv2D(64,(3,3), activation = 'relu')(c9)
-	output = Conv2D(2,(1,1), activation = 'relu')(c9) 	
+	output = Conv2D(1,(1,1), activation = 'relu')(c9) 	
 	return output
 #%% encoder
 
