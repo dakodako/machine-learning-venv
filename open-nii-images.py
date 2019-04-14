@@ -91,8 +91,8 @@ plt.imshow(curr_img, cmap='gray')
 
 # the convolutional autoencoder
 
-batch_size = 40
-epochs = 1
+batch_size = 10
+epochs = 100
 inChannel = 1
 x, y = 116, 116
 input_img = Input(shape = (x, y, inChannel))
@@ -118,37 +118,37 @@ def unet(input_img):
 	c4 = Conv2D(512, (3,3), activation = 'relu', padding = 'same')(p3)
 	c4 = Dropout(0.1)(c4) # ????
 	c4 = Conv2D(512, (3,3), activation = 'relu', padding = 'same')(c4)
-	p4 = MaxPooling2D((2,2), strides = (2,2))(c3)
+	p4 = MaxPooling2D((2,2), strides = (2,2))(c4)
 
 	c5 = Conv2D(1024, (3,3),activation = 'relu', padding = 'same')(p4)
 	c5 = Dropout(0.1)(c5) # ????
 	c5 = Conv2D(1024, (3,3),activation = 'relu', padding = 'same')(c5)
 
-	u6 = Conv2DTranspose(512,(2,2), strides = (2,2))(c5)
+	u6 = Conv2DTranspose(512,(2,2), strides = (2,2), padding = 'same')(c5)
 	u6 = concatenate([u6, c4])
 	c6 = Conv2D(512, (3,3), activation = 'relu', padding = 'same')(u6)
 	c6 = Dropout(0.1)(c6)
 	c6 = Conv2D(512,(3,3), activation = 'relu', padding = 'same')(c6)
-
-	u7 = Conv2DTranspose(256, (2,2), strides = (2,2))(c6)
-	u7 = concatenate([u7,p3])
+	u7 = Conv2DTranspose(256, (3,3), strides = (2,2), padding = 'valid')(c6)
+	u7 = concatenate([u7,c3])
 	c7 = Conv2D(256, (3,3), activation = 'relu', padding = 'same')(u7)
 	c7 = Dropout(0.1)(c7)
 	c7 = Conv2D(256, (3,3), activation = 'relu', padding = 'same')(c7)
 
-	u8 = Conv2DTranspose(128, (2,2), strides = (2,2))(c7)
-	u8 = concatenate([u8, p2])
+	u8 = Conv2DTranspose(128, (2,2), strides = (2,2), padding = 'same')(c7)
+	u8 = concatenate([u8, c2])
 	c8 = Conv2D(128, (3,3), activation = 'relu', padding = 'same')(u8)
 	c8 = Dropout(0.1)(c8)
 	c8 = Conv2D(128, (3,3), activation = 'relu', padding = 'same')(c8)
 
-	u9 = Conv2DTranspose(64, (2,2), strides = (2,2))(c8)
-	u9 = concatenate([u9, p1])
+	u9 = Conv2DTranspose(64, (2,2), strides = (2,2), padding = 'same')(c8)
+	u9 = concatenate([u9, c1])
 	c9 = Conv2D(64,(3,3), activation = 'relu', padding = 'same')(u9)
 	c9 = Dropout(0.1)(c9)
 	c9 = Conv2D(64,(3,3), activation = 'relu', padding = 'same')(c9)
-	output = Conv2D(1,(1,1), activation = 'relu', padding = 'same')(c9) 	
+	output = Conv2D(1,(1,1), activation = 'relu', padding = 'same')(c9) 
 	return output
+
 #%% encoder
 
 # the encoder has three convolution layers
@@ -195,10 +195,9 @@ autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 autoencoder.summary()
 
 
-#autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground))
-
-#loss = autoencoder_train.history['loss']
-#val_loss = autoencoder_train.history['val_loss']
+autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground))
+loss = autoencoder_train.history['loss']
+val_loss = autoencoder_train.history['val_loss']
 '''
 epochs = range(1)
 plt.figure()
@@ -211,7 +210,7 @@ plt.show()
 #autoencoder = autoencoder.save_weights('autoencoder_mri.h5')
 #autoencoder = Model(input_img, autoencoder(input_img))
 #autoencoder.load_weights('autoencoder_mri.h5')
-
+'''
 pred = autoencoder.predict(valid_X)
 
 plt.figure(figsize=(20, 4))
@@ -226,6 +225,6 @@ for i in range(5):
     plt.subplot(1, 5, i+1)
     plt.imshow(pred[i, ..., 0], cmap='gray')  
 plt.show()
-'''
+
 
 
