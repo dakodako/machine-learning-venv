@@ -25,7 +25,7 @@ from matplotlib import pyplot as plt
 
 #%%
 
-ff = glob.glob('dataset/T1/*')
+ff = glob.glob('../MRI_data/dataset/*')
 
 
 
@@ -64,7 +64,7 @@ m = np.max(images)
 mi = np.min(images)
 images = (images - mi)/(m - mi)
 #%%
-temp = np.zeros([12*51,116,116,1])
+temp = np.zeros([32*51,116,116,1])
 temp[:,3:,3:,:] = images
 
 images = temp
@@ -91,8 +91,8 @@ plt.imshow(curr_img, cmap='gray')
 
 # the convolutional autoencoder
 
-batch_size = 10
-epochs = 100
+batch_size = 5
+epochs = 50
 inChannel = 1
 x, y = 116, 116
 input_img = Input(shape = (x, y, inChannel))
@@ -198,8 +198,8 @@ autoencoder.summary()
 autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground))
 loss = autoencoder_train.history['loss']
 val_loss = autoencoder_train.history['val_loss']
-'''
-epochs = range(1)
+
+epochs = range(50)
 plt.figure()
 plt.plot(epochs, loss, 'bo', label = 'Training loss')
 plt.plot(epochs, val_loss, 'b', label = 'Validation loss')
@@ -207,10 +207,10 @@ plt.title('Training and validation loss')
 plt.legend()
 plt.show()
 
-#autoencoder = autoencoder.save_weights('autoencoder_mri.h5')
+autoencoder.save_weights('unet_mri.h5')
 #autoencoder = Model(input_img, autoencoder(input_img))
 #autoencoder.load_weights('autoencoder_mri.h5')
-'''
+
 pred = autoencoder.predict(valid_X)
 
 plt.figure(figsize=(20, 4))
