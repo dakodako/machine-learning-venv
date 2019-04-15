@@ -65,7 +65,7 @@ m = np.max(images)
 mi = np.min(images)
 images = (images - mi)/(m - mi)
 #%%
-temp = np.zeros([12*51,116,116,1])
+temp = np.zeros([32*51,116,116,1])
 temp[:,3:,3:,:] = images
 
 images = temp
@@ -151,8 +151,8 @@ def unet2(input_img):
 	return output
 
 def unet(input_img):
-	s = Lambda(lambda x: x/255)(input_img)
-	c1 = Conv2D(64,(3,3),activation = 'relu', padding = 'same')(s)
+	#s = Lambda(lambda x: x/255)(input_img)
+	c1 = Conv2D(64,(3,3),activation = 'relu', padding = 'same')(input_img)
 	c1 = Dropout(0.1)(c1) # ????
 	c1 = Conv2D(64,(3,3), activation = 'relu', padding = 'same')(c1)
 	p1 = MaxPooling2D((2,2), strides = (2,2))(c1)
