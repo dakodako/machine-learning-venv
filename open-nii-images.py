@@ -95,7 +95,7 @@ plt.imshow(curr_img, cmap='gray')
 
 # the convolutional autoencoder
 
-batch_size = 5
+batch_size = 10
 epochs = 50
 inChannel = 1
 x, y = 116, 116
