@@ -58,17 +58,17 @@ for f in range(len(ff)):
 
 #extrace one slice out
 
-a[:,0,:].shape
+#a[:,0,:].shape
 #%%
 images = np.asarray(images)
 images = images.reshape(-1,113,113,1)
-images.shape
+#images.shape
 #%%
 m = np.max(images)
 mi = np.min(images)
 images = (images - mi)/(m - mi)
 #%%
-temp = np.zeros([32*51,116,116,1])
+temp = np.zeros([images.shape[0],116,116,1])
 temp[:,3:,3:,:] = images
 
 images = temp
@@ -103,6 +103,55 @@ input_img = Input(shape = (x, y, inChannel))
 
 # there are two parts in the autoencoder: encoder and decoder
 #%%
+def autoencoder2(input_img):
+	#s = Lambda(lambda x: x/255)(input_img)
+	c1 = Conv2D(32,(3,3),activation = 'relu', padding = 'same')(input_img)
+	c1 = Dropout(0.1)(c1) # ????
+	c1 = Conv2D(32,(3,3), activation = 'relu', padding = 'same')(c1)
+	p1 = MaxPooling2D((2,2), strides = (2,2))(c1)
+	c2 = Conv2D(64, (3,3), activation = 'relu', padding = 'same')(p1)
+	c2 = Dropout(0.1)(c2) # ????
+	c2 = Conv2D(64, (3,3), activation = 'relu', padding = 'same')(c2)
+	p2 = MaxPooling2D((2,2), strides = (2,2))(c2)
+
+	c3 = Conv2D(128,(3,3), activation = 'relu', padding = 'same')(p2)
+	c3 = Dropout(0.1)(c3) # ????
+	c3 = Conv2D(128,(3,3), activation = 'relu', padding = 'same')(c3)
+	p3 = MaxPooling2D((2,2), strides = (2,2))(c3)
+
+	c4 = Conv2D(256, (3,3), activation = 'relu', padding = 'same')(p3)
+	c4 = Dropout(0.1)(c4) # ????
+	c4 = Conv2D(256, (3,3), activation = 'relu', padding = 'same')(c4)
+	p4 = MaxPooling2D((2,2), strides = (2,2))(c4)
+
+	c5 = Conv2D(512, (3,3),activation = 'relu', padding = 'same')(p4)
+	c5 = Dropout(0.1)(c5) # ????
+	c5 = Conv2D(512, (3,3),activation = 'relu', padding = 'same')(c5)
+
+	u6 = Conv2DTranspose(512,(2,2), strides = (2,2), padding = 'same')(c5)
+	#u6 = concatenate([u6, c4])
+	c6 = Conv2D(256, (3,3), activation = 'relu', padding = 'same')(u6)
+	c6 = Dropout(0.1)(c6)
+	c6 = Conv2D(256,(3,3), activation = 'relu', padding = 'same')(c6)
+	u7 = Conv2DTranspose(256, (3,3), strides = (2,2), padding = 'valid')(c6)
+	#u7 = concatenate([u7,c3])
+	c7 = Conv2D(128, (3,3), activation = 'relu', padding = 'same')(u7)
+	c7 = Dropout(0.1)(c7)
+	c7 = Conv2D(128, (3,3), activation = 'relu', padding = 'same')(c7)
+
+	u8 = Conv2DTranspose(128, (2,2), strides = (2,2), padding = 'same')(c7)
+	#u8 = concatenate([u8, c2])
+	c8 = Conv2D(64, (3,3), activation = 'relu', padding = 'same')(u8)
+	c8 = Dropout(0.1)(c8)
+	c8 = Conv2D(64, (3,3), activation = 'relu', padding = 'same')(c8)
+
+	u9 = Conv2DTranspose(64, (2,2), strides = (2,2), padding = 'same')(c8)
+	#u9 = concatenate([u9, c1])
+	c9 = Conv2D(32,(3,3), activation = 'relu', padding = 'same')(u9)
+	c9 = Dropout(0.1)(c9)
+	c9 = Conv2D(32,(3,3), activation = 'relu', padding = 'same')(c9)
+	output = Conv2D(1,(1,1), activation = 'relu', padding = 'same')(c9) 
+	return output
 def unet2(input_img):
 	#s = Lambda(lambda x: x/255)(input_img)
 	c1 = Conv2D(32,(3,3),activation = 'relu', padding = 'same')(input_img)
@@ -133,7 +182,7 @@ def unet2(input_img):
 	c6 = Conv2D(256, (3,3), activation = 'relu', padding = 'same')(u6)
 	c6 = Dropout(0.1)(c6)
 	c6 = Conv2D(256,(3,3), activation = 'relu', padding = 'same')(c6)
-	u7 = Conv2DTranspose(256, (3,3), strides = (2,2), padding = 'valid')(c6)
+	u7 = Conv2DTranspose(128, (3,3), strides = (2,2), padding = 'valid')(c6)
 	u7 = concatenate([u7,c3])
 	c7 = Conv2D(128, (3,3), activation = 'relu', padding = 'same')(u7)
 	c7 = Dropout(0.1)(c7)
@@ -208,6 +257,7 @@ def unet(input_img):
 # the encoder has three convolution layers
 # each convolution layer is followed by a batch normalization layer
 # max-pooling layer is used after the first and second convolution blocks
+
 def autoencoder(input_img):
 	conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
 	conv1 = BatchNormalization()(conv1)
@@ -237,16 +287,17 @@ def autoencoder(input_img):
 	conv5 = Conv2D(32, (3, 3), activation='relu', padding='same')(conv5)
 	conv5 = BatchNormalization()(conv5)
 	up2 = UpSampling2D((2,2))(conv5) 
-	decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(up2) 
+	decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='valid')(up2) 
 	return decoded
 
 
 #%%
-#autoencoder = Model(input_img, autoencoder(input_img))
-autoencoder = Model(input_img, unet2(input_img))
+autoencoder = Model(input_img, autoencoder2(input_img))
+#autoencoder = Model(input_img, unet2(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 
 autoencoder.summary()
+
 #plot_model(autoencoder, to_file='unet.png')
 tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
@@ -261,7 +312,7 @@ plt.title('Training and validation loss')
 plt.legend()
 plt.show()
 
-autoencoder.save_weights('unet_mri.h5')
+#autoencoder.save_weights('unet_mri.h5')
 #autoencoder = Model(input_img, autoencoder(input_img))
 #autoencoder.load_weights('autoencoder_mri.h5')
 
