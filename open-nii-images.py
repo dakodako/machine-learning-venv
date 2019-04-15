@@ -8,6 +8,9 @@ from keras import regularizers
 from keras import backend as K
 from keras.layers.core import Dropout, Lambda
 from keras.layers.merge import concatenate
+from keras.utils import plot_model
+from time import time
+from tensorflow.python.keras.callbacks import TensorBoard
 #%%
 import os
 import numpy as np
@@ -244,11 +247,12 @@ autoencoder = Model(input_img, unet2(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 
 autoencoder.summary()
-
-autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground))
+#plot_model(autoencoder, to_file='unet.png')
+tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
+autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
 loss = autoencoder_train.history['loss']
 val_loss = autoencoder_train.history['val_loss']
-
+#acc = autoencoder_train.history['acc']
 epochs = range(50)
 plt.figure()
 plt.plot(epochs, loss, 'bo', label = 'Training loss')
