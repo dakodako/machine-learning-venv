@@ -10,7 +10,8 @@ from keras.layers.core import Dropout, Lambda
 from keras.layers.merge import concatenate
 from keras.utils import plot_model
 from time import time
-from tensorflow.python.keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard
+#from tensorflow.python.keras.callbacks import TensorBoard
 #%%
 import os
 import numpy as np
@@ -28,8 +29,8 @@ from matplotlib import pyplot as plt
 
 #%%
 
-ff = glob.glob('../MRI_data/dataset/*')
-#ff = glob.glob('dataset/T1/*')
+#ff = glob.glob('../MRI_data/dataset/*')
+ff = glob.glob('dataset/T1/*')
 
 
 
@@ -330,6 +331,8 @@ for i in range(5):
     plt.subplot(1, 5, i+1)
     plt.imshow(pred[i, ..., 0], cmap='gray')  
 plt.show()
+
+
 
 
 

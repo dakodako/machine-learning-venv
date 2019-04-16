@@ -18,3 +18,7 @@ https://www.quora.com/What-is-approximate-inference
 ### Image reconstruction
 
 https://www.datacamp.com/community/tutorials/reconstructing-brain-images-deep-learning
+
+### Using tensorboard with Keras
+
+https://fizzylogic.nl/2017/05/08/monitor-progress-of-your-keras-based-neural-network-using-tensorboard/

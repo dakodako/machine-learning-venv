@@ -18,7 +18,7 @@ import math
 import glob
 from matplotlib import pyplot as plt
 
-filepath = 'dataset/T1/*'
+filepath = 'dataset/MRI_data/dataset/X/*'
 filename = '/Users/chid/machine-learning-venv/dataset/T1/943862_T1w_restore.1.60.nii.gz'
 #%%
 def open_image(filename, padding = True, pad_size = 3):
@@ -45,6 +45,7 @@ def extract_a_slice(index, volume):
 def open_images(filepath, padding = True, pad_size = 3):
     images = []
     ff = glob.glob(filepath)
+    print(ff)
     for f in range(len(ff)):
         a = nib.load(ff[f])
         a = a.get_data()
@@ -65,6 +66,8 @@ def open_images(filepath, padding = True, pad_size = 3):
     return images
 
 #%%
+images = open_images(filepath)
+images.shape
 #images = open_image(filename)
 #s = extract_a_slice(1, images)
 #print(images.shape)
