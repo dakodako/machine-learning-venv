@@ -27,12 +27,14 @@ import glob
 from matplotlib import pyplot as plt
 
 #%%
-filepath_X = 'dataset/MRI_data/dataset/X/*'
-filepath_ground = 'dataset/MRI_data/dataset/ground/*'
-filepath_test_X = 'dataset/MRI_data/dataset2/X/*'
-filepath_test_ground = 'dataset/MRI_data/dataset2/ground/*'
-#for infile in sorted(glob.glob(filepath_X)):
-    #print("Current " + infile)
+filepath_X = '../MRI_data/MRI_data/dataset/X/*'
+filepath_ground = '../MRI_data/MRI_data/dataset/ground/*'
+filepath_test_X = '../MRI_data/MRI_data/dataset2/X/*'
+filepath_test_ground = '../MRI_data/MRI_data/dataset2/ground/*'
+#for infile in sorted(glob.glob(filepath_test_X)):
+   # print("Current " + infile)
+
+
 def autoencoder2(input_img):
 	#s = Lambda(lambda x: x/255)(input_img)
 	c1 = Conv2D(32,(3,3),activation = 'relu', padding = 'same')(input_img)
@@ -156,20 +158,21 @@ input_img = Input(shape = (x, y, inChannel))
 autoencoder = Model(input_img, autoencoder2(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop(), metrics=['accuracy'])
 autoencoder.summary()
+
+
 #%%
 tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
 autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
 loss = autoencoder_train.history['loss']
 val_loss = autoencoder_train.history['val_loss']
-acc = autoencoder_train.history['acc']
-val_acc = autoencoder_train.history['val_acc']
 #acc = autoencoder_train.history['acc']
+#val_acc = autoencoder_train.history['val_acc']
 epochs = range(50)
 plt.figure()
 plt.plot(epochs, loss, 'bo', label = 'Training loss')
 plt.plot(epochs, val_loss, 'b', label = 'Validation loss')
-plt.plot(epochs, acc, 'r+', label= 'Training accuracy')
-plt.plot(epochs, val_acc, 'r', label = 'Validation accuracy')
+#plt.plot(epochs, acc, 'r+', label= 'Training accuracy')
+#plt.plot(epochs, val_acc, 'r', label = 'Validation accuracy')
 plt.title('Training and validation loss')
 plt.legend()
 plt.show()
@@ -192,3 +195,6 @@ for i in range(5):
     plt.subplot(1, 5, i+1)
     plt.imshow(pred[i, ..., 0], cmap='gray')  
 plt.show()
+
+
+
