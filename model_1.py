@@ -204,10 +204,9 @@ input_img = Input(shape = (x, y, inChannel))
 
 
 #%%
-autoencoder = Model(input_img, autoencoder2(input_img))
+autoencoder = Model(input_img, unet2(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop(), metrics=['accuracy'])
 autoencoder.summary()
-
 
 #%%
 tensorboard = TensorBoard(log_dir="logs/{}".format(time()))
