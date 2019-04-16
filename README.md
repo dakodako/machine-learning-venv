@@ -22,3 +22,8 @@ https://www.datacamp.com/community/tutorials/reconstructing-brain-images-deep-le
 ### Using tensorboard with Keras
 
 https://fizzylogic.nl/2017/05/08/monitor-progress-of-your-keras-based-neural-network-using-tensorboard/
+
+### Open MATLAB from linux terminal
+
+/usr/local/MATLAB/R2019a/bin/matlab
+
