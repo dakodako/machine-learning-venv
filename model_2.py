@@ -239,12 +239,12 @@ input_img = Input(shape = (x, y, inChannel))
 
 
 #%%
-autoencoder = Model(input_img, unet2(input_img))
+autoencoder = Model(input_img, autoencoder2(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 autoencoder.summary()
 
 #%%
-tensorboard = TensorBoard(log_dir="denoise_logs/{}".format(time()))
+tensorboard = TensorBoard(log_dir="autoencoder_logs/{}".format(time()))
 autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
 loss = autoencoder_train.history['loss']
 val_loss = autoencoder_train.history['val_loss']
