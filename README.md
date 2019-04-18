@@ -27,3 +27,10 @@ https://fizzylogic.nl/2017/05/08/monitor-progress-of-your-keras-based-neural-net
 
 /usr/local/MATLAB/R2019a/bin/matlab
 
+### Some tool to visualize NN
+
+http://alexlenail.me/NN-SVG/AlexNet.html
+
+https://github.com/HarisIqbal88/PlotNeuralNet
+
+
