@@ -16,6 +16,7 @@ fname = 'highres001.nii.gz'
 a = nib.load(fname)
 a = a.get_data()
 print(a.shape)
+#%%
 mid = int(a.shape[1]/2)
 print(mid)
 test_img = a[:,127,24:200]
