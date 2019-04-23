@@ -21,7 +21,7 @@ from PIL import Image, ImageDraw, ImageFont
 from sklearn.utils import shuffle
 import nibabel as nib # python library for reading MR images
 from sklearn.model_selection import train_test_split
-
+#%%
 import math
 import glob
 from matplotlib import pyplot as plt
@@ -185,12 +185,12 @@ def open_images_add_corruption(filepath, padding = True, pad_size = 3):
 
 
 #%%
-filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
-filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
-filepath_test_X = '../MRI_data/MRI_data/denoise/dataset2/X/*' # for ubuntu
-filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ubuntu
-#filepath_X = '../Documents/MRI_data/dataset/X/*' # for macos
-#filepath_ground = '../Documents/MRI_data/dataset/ground/*' # for macos
+#filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
+#filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
+#filepath_test_X = '../MRI_data/MRI_data/denoise/dataset2/X/*' # for ubuntu
+#filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ubuntu
+filepath_X = '../Documents/MRI_data/dataset/X/*' # for macos
+filepath_ground = '../Documents/MRI_data/dataset/ground/*' # for macos
 #filepath_test_X = '../Documents/MRI_data/dataset2/X/*' # for macos
 #filepath_test_ground = '../Documents/MRI_data/dataset2/ground/*' # for macos
 #images_X = open_images_add_corruption(filepath_X)
@@ -229,7 +229,7 @@ curr_img = np.reshape(valid_ground[0], (116,116))
 plt.imshow(curr_img, cmap='gray')
 
 #plt.show()
-
+#%%
 batch_size = 10
 epochs = 100
 inChannel = 1
@@ -242,7 +242,7 @@ input_img = Input(shape = (x, y, inChannel))
 autoencoder = Model(input_img, autoencoder2(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 autoencoder.summary()
-
+'''
 #%%
 tensorboard = TensorBoard(log_dir="autoencoder_logs/{}".format(time()))
 autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
@@ -285,6 +285,7 @@ for i in range(5):
     plt.subplot(1, 5, i+1)
     plt.imshow(pred[i, ..., 0], cmap='gray')  
 plt.show()
+'''
 
 
 
