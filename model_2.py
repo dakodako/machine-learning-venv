@@ -11,6 +11,8 @@ from keras.layers.merge import concatenate
 from keras.utils import plot_model
 from time import time
 from keras.callbacks import TensorBoard
+from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing import image
 #from tensorflow.python.keras.callbacks import TensorBoard
 #%%
 import os
@@ -27,6 +29,7 @@ import glob
 from matplotlib import pyplot as plt
 from random import sample
 #from preprocessing import open_images, open_images_add_corruption
+#%%
 def unet2(input_img):
 	#s = Lambda(lambda x: x/255)(input_img)
 	c1 = Conv2D(32,(3,3),activation = 'relu', padding = 'same')(input_img)
@@ -191,11 +194,26 @@ def open_images_add_corruption(filepath, padding = True, pad_size = 3):
 #filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ubuntu
 filepath_X = '../Documents/MRI_data/dataset/X/*' # for macos
 filepath_ground = '../Documents/MRI_data/dataset/ground/*' # for macos
+base_dir = '../Documents/MRI_data/dataset/'
+train_dir = os.path.join(base_dir,'train')
+os.mkdir(train_dir)
 #filepath_test_X = '../Documents/MRI_data/dataset2/X/*' # for macos
 #filepath_test_ground = '../Documents/MRI_data/dataset2/ground/*' # for macos
 #images_X = open_images_add_corruption(filepath_X)
+#%%
 images_X = open_images_add_corruption(filepath_X)
 images_ground = open_images(filepath_ground)
+#%%
+datagen = ImageDataGenerator(
+	rotation_range = 180,
+	width_shift_range = 0.2,
+	height_shift_range = 0.2,
+	shear_range = 0.2,
+	zoom_range = 0.2,
+	horizontal_flip = True,
+	fill_mode = 'nearest'
+)
+
 #images_test_X = open_images_add_corruption(filepath_test_X)
 #images_test_ground = open_images(filepath_test_ground)
 #%%
