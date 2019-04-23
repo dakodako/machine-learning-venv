@@ -166,7 +166,7 @@ def open_images_add_corruption(filepath, padding = True, pad_size = 3):
         for i in range(a.shape[1]):
             s = a[:,i,:]
             s_flat = np.reshape(s, (np.product(s.shape),))
-            idx = sample(range(np.product(s.shape)), int(0.5*np.product(s.shape)))
+            idx = sample(range(np.product(s.shape)), int(0.8*np.product(s.shape)))
             #print(idx[10:50])
             s_flat[idx] = 0
             s_downsampled = np.reshape(s_flat, s.shape)
@@ -250,6 +250,7 @@ loss = autoencoder_train.history['loss']
 val_loss = autoencoder_train.history['val_loss']
 #acc = autoencoder_train.history['acc']
 #val_acc = autoencoder_train.history['val_acc']
+autoencoder.save('autoencoder2_mri.h5')
 epochs = range(100)
 plt.figure()
 plt.plot(epochs, loss, 'bo', label = 'Training loss')
