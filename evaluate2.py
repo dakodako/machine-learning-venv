@@ -5,20 +5,34 @@ from keras.models import load_model
 from pydicom.data import get_testdata_files
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.misc import imresize
+#from scipy.misc import imresize, imrotate
+from skimage.transform import rotate, resize
+import nibabel as nib
 #%%
 model = load_model('autoencoder2_mri.h5')
 model.summary()
 #%%
-ds = pydicom.dcmread('test.dcm')
+fname = 'highres001.nii.gz'
+a = nib.load(fname)
+a = a.get_data()
+print(a.shape)
+mid = int(a.shape[1]/2)
+print(mid)
+test_img = a[:,127,24:200]
+print(test_img.shape)
+plt.imshow(test_img, cmap = 'gray')
+#%%
+# reading dicom
+#ds = pydicom.dcmread('test.dcm')
 #plt.imshow(ds.pixel_array)
-test_img = ds.pixel_array
-test_img = imresize(test_img, (116,116))
+#test_img = ds.pixel_array
+test_img = resize(test_img, (116,116))
+#test_img = rotate(test_img, 180)
 #%%
 m = np.max(test_img)
 mi = np.min(test_img)
-images = (test_img - mi)/(m - mi)
-#plt.imshow(test_img)
+test_img = (test_img - mi)/(m - mi)
+plt.imshow(test_img, cmap = 'gray')
 
 #%%
 test_img_tensor = np.expand_dims(test_img, axis = 0)
