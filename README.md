@@ -33,4 +33,6 @@ http://alexlenail.me/NN-SVG/AlexNet.html
 
 https://github.com/HarisIqbal88/PlotNeuralNet
 
+https://datascience.stackexchange.com/questions/14899/how-to-draw-deep-learning-network-architecture-diagrams
+
 
