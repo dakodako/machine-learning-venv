@@ -35,4 +35,16 @@ https://github.com/HarisIqbal88/PlotNeuralNet
 
 https://datascience.stackexchange.com/questions/14899/how-to-draw-deep-learning-network-architecture-diagrams
 
+### Common errors when using Keras (tensorflow) with GPU
+
+Cudnn cannot be initialised: version mismatch, downgrade tensorflow
+
+### Packages need to be installed to run model_2.py
+
+conda install -n name_of_venv -c conda-forge keras
+conda install -n name_of_venv -c conda-forge scikit-image
+conda install -n name_of_venv -c conda-forge nibabel
+conda install -n name_of_venv scikit-learn
+
+
 

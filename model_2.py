@@ -190,8 +190,8 @@ def open_images_add_corruption(filepath, padding = True, pad_size = 3):
 #%%
 filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
 filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
-#filepath_test_X = '../MRI_data/MRI_data/denoise/dataset2/X/*' # for ubuntu
-#filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ubuntu
+filepath_test_X = '../MRI_data/MRI_data/denoise/dataset2/X/*' # for ubuntu
+filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ubuntu
 #filepath_X = '../Documents/MRI_data/dataset/X/*' # for macos
 #filepath_ground = '../Documents/MRI_data/dataset/ground/*' # for macos
 #base_dir = '../Documents/MRI_data/dataset/'
