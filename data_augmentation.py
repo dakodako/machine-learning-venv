@@ -119,15 +119,45 @@ inChannel = 1
 x, y = 116, 116
 input_img = Input(shape = (x, y, inChannel))
 tensorboard = TensorBoard(log_dir="data_aug_logs/{}".format(time()))
-epochs = 1
+#tensorboard --logdir=data_aug_logs/
+epochs = 20
 datagen.fit(train_X)
 #datagen.fit(train_Y)
 autoencoder = Model(input_img, autoencoder2(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 autoencoder.summary()
-autoencoder.fit_generator(datagen.flow(train_X, train_Y, batch_size = 20),steps_per_epoch =5000, epochs = epochs,validation_data = datagen.flow(valid_X, valid_Y, batch_size = 10),validation_steps = 40, callbacks=[tensorboard])
+autoencoder.fit_generator(datagen.flow(train_X, train_Y, batch_size = 20),steps_per_epoch =1000, epochs = epochs,validation_data = datagen.flow(valid_X, valid_Y, batch_size = 10),validation_steps = 40, callbacks=[tensorboard])
 #autoencoder.fit_generator(datagen.flow(train_X, train_Y, batch_size = 20),steps_per_epoch =5000, epochs = epochs, callbacks=[tensorboard])
 autoencoder.save('autoencoder_data_aug_mri.h5')
 #autoencoder_train = autoencoder.fit(train_X, train_Y, batch_size=10,epochs=epochs,verbose=1)
 #base_dir = '../MRI_data/MRI_data/denoise/dataset/'
+
+
+
+filepath_test_X = '../MRI_data/MRI_data/denoise/dataset2/X/*' # for ubuntu
+filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ubuntu
+test_X = open_images_add_corruption(filepath_test_X)
+test_ground = open_images(filepath_test_ground)
+
+#%%
+pred = autoencoder.predict(test_X)
+plt.figure(figsize=(20, 4))
+print("Test Images inputs")
+for i in range(5):
+    plt.subplot(1, 5, i + 1)
+    plt.imshow(test_X[i, ..., 0], cmap = 'gray')
+plt.show()
+
+plt.figure(figsize=(20, 4))
+print("Test Images")
+for i in range(5):
+    plt.subplot(1, 5, i+1)
+    plt.imshow(test_ground[i, ..., 0], cmap='gray')
+plt.show()    
+plt.figure(figsize=(20, 4))
+print("Reconstruction of Test Images")
+for i in range(5):
+    plt.subplot(1, 5, i+1)
+    plt.imshow(pred[i, ..., 0], cmap='gray')  
+plt.show()
 
