@@ -1,4 +1,4 @@
-
+#%%
 from keras.layers import Input,Dense,Flatten,Dropout,merge,Reshape,Conv2D,MaxPooling2D,UpSampling2D,Conv2DTranspose
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model,Sequential
@@ -28,6 +28,7 @@ import math
 import glob
 from matplotlib import pyplot as plt
 from random import sample
+#%%
 def open_images(filepath, padding = True, pad_size = 3):
     images = []
     #ff = glob.glob(filepath)
@@ -100,11 +101,15 @@ def autoencoder2(input_img):
 	c9 = Conv2D(32,(3,3), activation = 'relu', padding = 'same')(c9)
 	output = Conv2D(1,(1,1), activation = 'relu', padding = 'same')(c9) 
 	return output
-filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
-filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
-
+#filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
+#filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
+filepath_X = '../Documents/MRI_data/dataset/X/*' # for macos
+filepath_ground = '../Documents/MRI_data/dataset/ground/*' # for macos
+filepath_test_X = '../Documents/MRI_data/dataset2/X/*' # for macos
+filepath_test_ground = '../Documents/MRI_data/dataset2/ground/*' # for macos
 images_X = open_images(filepath_X)
 images_ground = open_images(filepath_ground)
+#%%
 train_X,valid_X,train_Y,valid_Y = train_test_split(images_X,images_ground,test_size=0.2,random_state=13)
 datagen = ImageDataGenerator(
 	rotation_range = 180,
@@ -119,13 +124,13 @@ inChannel = 1
 x, y = 116, 116
 input_img = Input(shape = (x, y, inChannel))
 tensorboard = TensorBoard(log_dir="data_aug_logs/{}".format(time()))
-epochs = 1
+epochs = 20
 datagen.fit(train_X)
 #datagen.fit(train_Y)
 autoencoder = Model(input_img, autoencoder2(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 autoencoder.summary()
-autoencoder.fit_generator(datagen.flow(train_X, train_Y, batch_size = 20),steps_per_epoch =5000, epochs = epochs,validation_data = datagen.flow(valid_X, valid_Y, batch_size = 10),validation_steps = 40, callbacks=[tensorboard])
+autoencoder.fit_generator(datagen.flow(train_X, train_Y, batch_size = 20),steps_per_epoch =1000, epochs = epochs,validation_data = datagen.flow(valid_X, valid_Y, batch_size = 10),validation_steps = 40, callbacks=[tensorboard])
 #autoencoder.fit_generator(datagen.flow(train_X, train_Y, batch_size = 20),steps_per_epoch =5000, epochs = epochs, callbacks=[tensorboard])
 autoencoder.save('autoencoder_data_aug_mri.h5')
 #autoencoder_train = autoencoder.fit(train_X, train_Y, batch_size=10,epochs=epochs,verbose=1)
