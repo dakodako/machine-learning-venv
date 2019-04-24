@@ -188,15 +188,15 @@ def open_images_add_corruption(filepath, padding = True, pad_size = 3):
 
 
 #%%
-#filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
-#filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
+filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
+filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
 #filepath_test_X = '../MRI_data/MRI_data/denoise/dataset2/X/*' # for ubuntu
 #filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ubuntu
-filepath_X = '../Documents/MRI_data/dataset/X/*' # for macos
-filepath_ground = '../Documents/MRI_data/dataset/ground/*' # for macos
-base_dir = '../Documents/MRI_data/dataset/'
-train_dir = os.path.join(base_dir,'train')
-os.mkdir(train_dir)
+#filepath_X = '../Documents/MRI_data/dataset/X/*' # for macos
+#filepath_ground = '../Documents/MRI_data/dataset/ground/*' # for macos
+#base_dir = '../Documents/MRI_data/dataset/'
+#train_dir = os.path.join(base_dir,'train')
+#os.mkdir(train_dir)
 #filepath_test_X = '../Documents/MRI_data/dataset2/X/*' # for macos
 #filepath_test_ground = '../Documents/MRI_data/dataset2/ground/*' # for macos
 #images_X = open_images_add_corruption(filepath_X)
@@ -204,15 +204,15 @@ os.mkdir(train_dir)
 images_X = open_images_add_corruption(filepath_X)
 images_ground = open_images(filepath_ground)
 #%%
-datagen = ImageDataGenerator(
-	rotation_range = 180,
-	width_shift_range = 0.2,
-	height_shift_range = 0.2,
-	shear_range = 0.2,
-	zoom_range = 0.2,
-	horizontal_flip = True,
-	fill_mode = 'nearest'
-)
+#datagen = ImageDataGenerator(
+	#rotation_range = 180,
+	#width_shift_range = 0.2,
+	#height_shift_range = 0.2,
+	#shear_range = 0.2,
+	#zoom_range = 0.2,
+	#horizontal_flip = True,
+	#fill_mode = 'nearest'
+#)
 
 #images_test_X = open_images_add_corruption(filepath_test_X)
 #images_test_ground = open_images(filepath_test_ground)
@@ -260,10 +260,11 @@ input_img = Input(shape = (x, y, inChannel))
 autoencoder = Model(input_img, autoencoder2(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 autoencoder.summary()
-'''
+
 #%%
-tensorboard = TensorBoard(log_dir="autoencoder_logs/{}".format(time()))
-autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
+#tensorboard = TensorBoard(log_dir="autoencoder_logs/{}".format(time()))
+#autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
+autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground))
 loss = autoencoder_train.history['loss']
 val_loss = autoencoder_train.history['val_loss']
 #acc = autoencoder_train.history['acc']
@@ -303,7 +304,7 @@ for i in range(5):
     plt.subplot(1, 5, i+1)
     plt.imshow(pred[i, ..., 0], cmap='gray')  
 plt.show()
-'''
+
 
 
 
