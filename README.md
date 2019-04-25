@@ -42,9 +42,16 @@ Cudnn cannot be initialised: version mismatch, downgrade tensorflow
 ### Packages need to be installed to run model_2.py
 
 conda install -n name_of_venv -c conda-forge keras
+
 conda install -n name_of_venv -c conda-forge scikit-image
+
 conda install -n name_of_venv -c conda-forge nibabel
+
 conda install -n name_of_venv scikit-learn
+
+### Image Registration between Multimodal MR images
+
+https://au.mathworks.com/help/images/registering-multimodal-mri-images.html
 
 
 
