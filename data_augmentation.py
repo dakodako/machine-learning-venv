@@ -101,6 +101,37 @@ def autoencoder2(input_img):
 	c9 = Conv2D(32,(3,3), activation = 'relu', padding = 'same')(c9)
 	output = Conv2D(1,(1,1), activation = 'relu', padding = 'same')(c9) 
 	return output
+
+def open_images_add_corruption(filepath, padding = True, pad_size = 3):
+    #print(filepath)
+    images = []
+    #ff = glob.glob(filepath)
+    #print(ff)
+    for f in sorted(glob.glob(filepath)):
+        # print(f)
+        a = nib.load(f)
+        a = a.get_data()
+        # extracting the central 50 slices
+        mid = int(a.shape[1]/2)
+        a = a[:,mid-25:mid + 25,:]
+        for i in range(a.shape[1]):
+            s = a[:,i,:]
+            s_flat = np.reshape(s, (np.product(s.shape),))
+            idx = sample(range(np.product(s.shape)), int(0.8*np.product(s.shape)))
+            #print(idx[10:50])
+            s_flat[idx] = 0
+            s_downsampled = np.reshape(s_flat, s.shape)
+            images.append(s_downsampled)
+    images = np.asarray(images)
+    images = images.reshape(-1,images.shape[1],images.shape[2],1)
+    if padding == True:
+        temp = np.zeros([images.shape[0],images.shape[1] + pad_size,images.shape[2] + pad_size,1])
+        temp[:,3:,3:,:] = images
+        images = temp
+    m = np.max(images)
+    mi = np.min(images)
+    images = (images - mi)/(m - mi)
+    return images
 #filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
 #filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
 filepath_X = '../Documents/MRI_data/dataset/X/*' # for macos

@@ -21,7 +21,7 @@ mid = int(a.shape[1]/2)
 print(mid)
 test_img = a[:,127,24:200]
 print(test_img.shape)
-plt.imshow(test_img, cmap = 'gray')
+#plt.imshow(test_img, cmap = 'gray')
 #%%
 # reading dicom
 #ds = pydicom.dcmread('test.dcm')
@@ -34,7 +34,7 @@ m = np.max(test_img)
 mi = np.min(test_img)
 test_img = (test_img - mi)/(m - mi)
 plt.imshow(test_img, cmap = 'gray')
-
+plt.show()
 #%%
 test_img_tensor = np.expand_dims(test_img, axis = 0)
 test_img_tensor = np.expand_dims(test_img_tensor, axis = 3)
@@ -46,6 +46,8 @@ print(test_img_tensor.shape)
 pred = model.predict(test_img_tensor)
 print(pred.shape)
 plt.imshow(pred[0,:,:,0], cmap = 'gray')
+plt.show()
+'''
 #%%
 layer_outputs = [layer.output for layer in model.layers[:36]]
 print(len(layer_outputs))
@@ -97,3 +99,5 @@ for layer_name, layer_activation in zip(layer_names, activations):
         plt.imshow(display_grid, aspect='auto',cmap='gray')
         plt.show()
         fig.savefig(figname, dpi=fig.dpi)
+
+'''
