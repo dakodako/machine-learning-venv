@@ -14,6 +14,10 @@ https://towardsdatascience.com/tensorflow-gpu-installation-made-easy-use-conda-i
 
 https://www.quora.com/What-is-approximate-inference
 
+#### what is leaky ReLu
+
+Leaky relu has a small slope at the negative values.
+
 
 ### Image reconstruction
 
@@ -52,6 +56,9 @@ conda install -n name_of_venv scikit-learn
 ### Image Registration between Multimodal MR images
 
 https://au.mathworks.com/help/images/registering-multimodal-mri-images.html
+
+https://au.mathworks.com/help/images/registering-multimodal-3-d-medical-images.html
+
 
 
 
