@@ -51,6 +51,15 @@ def open_images(filepath):
     return images
 
 
+
+
+
+filepath_X = sys.argv[1]
+filepath_ground = sys.argv[2]
+
+image_X = open_images(filepath_X)
+image_ground = open_images(filepath_ground)
+print(image_X.shape)
 filepath_X = sys.argv[1]
 filepath_ground = sys.argv[2]
 images_X = open_images(filepath_X)

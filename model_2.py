@@ -28,6 +28,7 @@ import math
 import glob
 from matplotlib import pyplot as plt
 from random import sample
+import sys
 #from preprocessing import open_images, open_images_add_corruption
 #%%
 def unet2(input_img):
@@ -188,10 +189,15 @@ def open_images_add_corruption(filepath, padding = True, pad_size = 3):
 
 
 #%%
-filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
-filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
-filepath_test_X = '../MRI_data/MRI_data/denoise/dataset2/X/*' # for ubuntu
-filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ubuntu
+filepath_X = sys.argv[1]
+filepath_ground = sys.argv[2]
+print(filepath_X)
+print(filepath_ground)
+
+#filepath_X = '../MRI_data/MRI_data/denoise/dataset/X/*' # for ubuntu
+#filepath_ground = '../MRI_data/MRI_data/denoise/dataset/ground/*' # for ubuntu
+#filepath_test_X = '../MRI_data/MRI_data/denoise/dataset2/X/*' # for ubuntu
+#filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ubuntu
 #filepath_X = '../Documents/MRI_data/dataset/X/*' # for macos
 #filepath_ground = '../Documents/MRI_data/dataset/ground/*' # for macos
 #base_dir = '../Documents/MRI_data/dataset/'
@@ -201,8 +207,11 @@ filepath_test_ground = '../MRI_data/MRI_data/denoise/dataset2/ground/*' # for ub
 #filepath_test_ground = '../Documents/MRI_data/dataset2/ground/*' # for macos
 #images_X = open_images_add_corruption(filepath_X)
 #%%
+
 images_X = open_images_add_corruption(filepath_X)
 images_ground = open_images(filepath_ground)
+print(images_X.shape)
+
 #%%
 #datagen = ImageDataGenerator(
 	#rotation_range = 180,
@@ -304,6 +313,7 @@ for i in range(5):
     plt.subplot(1, 5, i+1)
     plt.imshow(pred[i, ..., 0], cmap='gray')  
 plt.show()
+
 
 
 
