@@ -1,0 +1,17 @@
+31 1360 petra 144 mp2 96
+32 576 petra 144 mp2 96
+33 1226 petra 150 mp2 96
+34 1719 petra 144 mp2 122
+mp2 135/96 petra 144/170
+
+
+for 3D registration
+mp2_volume_rotate = imrotate3(mp2_volume,90,[0 1 0])
+mp2_volume_rotate2 = imrotate3(mp2_volume_rotate, 90, [1 0 0])
+fixVolume = mp2_volume;
+I registered first and then flip
+movingRegisteredVolume = flip(movingRegisteredVolume,2);
+
+
+python model_3.py '../MRI_data/MRI_data/project1735/PETRA2/*' '../MRI_data/MRI_data/project1735/MP2RAGE2/*' '../MRI_data/MRI_data/project1756/PETRA/*' '../MRI_data/MRI_data/project1756/MP2RAGE/*'
+
