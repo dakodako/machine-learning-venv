@@ -3,6 +3,7 @@ from keras.layers import Input,Dense,Flatten,Dropout,merge,Reshape,Conv2D,MaxPoo
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model,Sequential
 from keras.callbacks import ModelCheckpoint
+from keras import optimizers
 from keras.optimizers import Adadelta, RMSprop,SGD,Adam
 from keras import regularizers
 from keras import backend as K
@@ -287,7 +288,8 @@ inChannel = 1
 x, y = 256, 256
 input_img = Input(shape = (x,y,inChannel))
 autoencoder = Model(input_img, unet3(input_img))
-autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
+rmsprop = optimizers.RMSprop(lr = 0.005)
+autoencoder.compile(loss='mean_squared_error', optimizer = rmsprop)
 autoencoder.summary()
 #%%
 tensorboard = TensorBoard(log_dir="autoencoder2_data_aug_logs/{}".format(time()))
