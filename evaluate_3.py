@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from skimage.transform import rotate, resize
 import nibabel as nib
 import glob
+import sys
 #%%
 def pad_zero_margins2(input_img, size):
     width = input_img.shape[1]
@@ -42,8 +43,8 @@ model = load_model('autoencoder2_petra.h5')
 model.summary()
 
 #%%
-filepath_test_X = 'PETRA2/*'#sys.argv[3]
-filepath_test_ground = 'MP2RAGE2/*'#sys.argv[4]
+filepath_test_X = sys.argv[1]#'PETRA2/*'
+filepath_test_ground = sys.argv[2]#'MP2RAGE2/*'
 test_X = open_images(filepath_test_X)
 test_ground = open_images(filepath_test_ground)
 

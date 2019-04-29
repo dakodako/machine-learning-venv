@@ -15,3 +15,5 @@ movingRegisteredVolume = flip(movingRegisteredVolume,2);
 
 python model_3.py '../MRI_data/MRI_data/project1735/PETRA2/*' '../MRI_data/MRI_data/project1735/MP2RAGE2/*' '../MRI_data/MRI_data/project1756/PETRA/*' '../MRI_data/MRI_data/project1756/MP2RAGE/*'
 
+python evaluate_3.py '../MRI_data/MRI_data/project1756/PETRA/*' '../MRI_data/MRI_data/project1756/MP2RAGE/*'
+
