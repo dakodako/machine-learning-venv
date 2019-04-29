@@ -155,8 +155,8 @@ def open_images(filepath):
 
 #%%
 
-filepath_X = 'PETRA2/*'
-filepath_ground = 'MP2RAGE2/*'
+filepath_X = sys.argv[1]
+filepath_ground = sys.argv[2]
 
 image_X = open_images(filepath_X)
 image_ground = open_images(filepath_ground)
