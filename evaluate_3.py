@@ -43,8 +43,8 @@ model = load_model('autoencoder2_petra.h5')
 model.summary()
 
 #%%
-filepath_test_X = sys.argv[1]#'PETRA2/*'
-filepath_test_ground = sys.argv[2]#'MP2RAGE2/*'
+filepath_test_X = 'PETRA2/*'
+filepath_test_ground = 'MP2RAGE2/*'
 test_X = open_images(filepath_test_X)
 test_ground = open_images(filepath_test_ground)
 
@@ -52,23 +52,50 @@ test_ground = open_images(filepath_test_ground)
 pred = model.predict(test_X)
 print(pred.shape)
 #%%
+tst_idx = [0,10,20,30,49]
 plt.figure(figsize=(20, 4))
 print("Test Images inputs")
 for i in range(5):
     plt.subplot(1, 5, i + 1)
-    plt.imshow(test_X[i, ..., 0], cmap = 'gray')
+    plt.imshow(test_X[tst_idx[i], ..., 0], cmap = 'gray')
 plt.show()
 
 plt.figure(figsize=(20, 4))
 print("Test Images")
 for i in range(5):
     plt.subplot(1, 5, i+1)
-    plt.imshow(test_ground[i, ..., 0], cmap='gray')
+    plt.imshow(test_ground[tst_idx[i], ..., 0], cmap='gray')
 plt.show()    
 
 plt.figure(figsize=(20, 4))
 print("Reconstruction of Test Images")
 for i in range(5):
     plt.subplot(1, 5, i+1)
-    plt.imshow(pred[i, ..., 0], cmap='gray')  
+    plt.imshow(pred[tst_idx[i], ..., 0], cmap='gray')  
+plt.show()
+
+#%%
+print(test_X.shape)
+print(test_ground.shape)
+#%%
+plt.figure(figsize=(20, 4))
+print("Test Images inputs")
+for i in range(5):
+    k = i + 4
+    plt.subplot(1, 5, i + 1)
+    plt.imshow(test_X[k, ..., 0], cmap = 'gray')
+plt.show()
+
+plt.figure(figsize=(20, 4))
+print("Test Images")
+for i in range(5):
+    plt.subplot(1, 5, i+1)
+    plt.imshow(test_ground[k, ..., 0], cmap='gray')
+plt.show()    
+
+plt.figure(figsize=(20, 4))
+print("Reconstruction of Test Images")
+for i in range(5):
+    plt.subplot(1, 5, i+1)
+    plt.imshow(pred[k, ..., 0], cmap='gray')  
 plt.show()

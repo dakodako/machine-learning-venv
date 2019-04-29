@@ -12,6 +12,7 @@ from keras.utils import plot_model
 from time import time
 from keras.callbacks import TensorBoard
 from skimage.transform import resize, rotate
+from keras.preprocessing.image import ImageDataGenerator
 #from tensorflow.python.keras.callbacks import TensorBoard
 #%%
 import os
@@ -244,6 +245,17 @@ train_X,valid_X,train_ground,valid_ground = train_test_split(images_X,images_gro
 print("Dataset (images) shape: {shape}".format(shape=images_X.shape))
 print("Dataset (images) shape: {shape}".format(shape=images_ground.shape))
 plt.figure(figsize=[5,5])
+
+#%%
+datagen = ImageDataGenerator(
+	rotation_range = 180,
+	width_shift_range = 0.2,
+	height_shift_range = 0.2,
+	shear_range = 0.2,
+	zoom_range = 0.5,
+	horizontal_flip = True,
+	fill_mode = 'nearest'
+)
 #%%
 # Display the first image in training data
 plt.subplot(121)
@@ -278,11 +290,12 @@ autoencoder = Model(input_img, unet3(input_img))
 autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 autoencoder.summary()
 
-tensorboard = TensorBoard(log_dir="autoencoder2_logs/{}".format(time()))
-autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
-loss = autoencoder_train.history['loss']
-val_loss = autoencoder_train.history['val_loss']
-autoencoder.save('autoencoder2_petra.h5')
+tensorboard = TensorBoard(log_dir="autoencoder2_data_aug_logs/{}".format(time()))
+autoencoder.fit_generator(datagen.flow(train_X, train_ground, batch_size = batch_size),steps_per_epoch =1000, epochs = epochs,validation_data = datagen.flow(valid_X, valid_ground, batch_size = 1),validation_steps = 170, callbacks=[tensorboard])
+#autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
+#loss = autoencoder_train.history['loss']
+#val_loss = autoencoder_train.history['val_loss']
+autoencoder.save('autoencoder2_petra_data_aug.h5')
 '''
 #%%
 filepath_test_X = sys.argv[3]#'../Documents/MRI_data/dataset/X/*'#sys.argv[3]
