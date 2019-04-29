@@ -248,7 +248,7 @@ plt.figure(figsize=[5,5])
 
 #%%
 datagen = ImageDataGenerator(
-	rotation_range = 180,
+	rotation_range = 90,
 	width_shift_range = 0.2,
 	height_shift_range = 0.2,
 	shear_range = 0.2,
@@ -291,7 +291,7 @@ autoencoder.compile(loss='mean_squared_error', optimizer = RMSprop())
 autoencoder.summary()
 #%%
 tensorboard = TensorBoard(log_dir="autoencoder2_data_aug_logs/{}".format(time()))
-autoencoder.fit_generator(datagen.flow(train_X, train_ground, batch_size = batch_size),steps_per_epoch =1000, epochs = epochs,validation_data = datagen.flow(valid_X, valid_ground, batch_size = 1),validation_steps = 170, callbacks=[tensorboard])
+autoencoder.fit_generator(datagen.flow(train_X, train_ground, batch_size = batch_size),steps_per_epoch =500, epochs = epochs,validation_data = datagen.flow(valid_X, valid_ground, batch_size = 1),validation_steps = 170, callbacks=[tensorboard])
 #autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
 #loss = autoencoder_train.history['loss']
 #val_loss = autoencoder_train.history['val_loss']
