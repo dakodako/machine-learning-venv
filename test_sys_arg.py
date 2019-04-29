@@ -1,13 +1,18 @@
-
+#%%
 import sys
 import nibabel as nib
 import numpy as np
 import glob
 from matplotlib import pyplot as plt
-def pad_zero_margins(input_img):
-    output_img = np.zeros((256,256))
-    output_img[:,31:224] = input_img
+from skimage.transform import rotate, resize
+#%%
+def pad_zero_margins(input_img, size):
+    width = input_img.shape[1]
+    start = int(np.floor((size - width)/2))
+    output_img = np.zeros((size,size))
+    output_img[:,start:(start + width)] = input_img
     return output_img
+#%%
 def open_images(filepath, padding = True, pad_size = 3):
     images = []
     #ff = glob.glob(filepath)
@@ -41,27 +46,7 @@ print(sys.argv[1])
 
 filepath_X = sys.argv[1]
 filepath_ground = sys.argv[2]
-'''
-a = nib.load(filepath_X)
-a = a.get_data()
-print(a.shape)
-images = []
-mid = int(a.shape[1]/2)
-a = a[:,:,mid-25:mid + 25]
-for i in range(a.shape[2]):
-    images.append((a[:,:,i]))
-images = np.asarray(images)
-images = images.reshape(-1,images.shape[1],images.shape[2],1)
-m = np.max(images)
-mi = np.min(images)
-images = (images - mi)/(m - mi)
 
-print(images.shape)
-s = np.reshape(images[20,:,:,:],[256,193])
-plt.imshow(s)
-plt.show()
-
-'''
 b = nib.load(filepath_ground)
 b = b.get_data()
 print(b.shape)
@@ -71,7 +56,7 @@ b = b[:,:,mid-25:mid + 25]
 for i in range(b.shape[2]):
     temp = b[:,:,i]
     temp = np.reshape(temp,[b.shape[0],b.shape[1]])
-    temp = pad_zero_margins(temp)
+    temp = pad_zero_margins(temp,256)
     images.append(temp)
 images = np.asarray(images)
 images = images.reshape(-1,images.shape[1],images.shape[2],1)
@@ -83,12 +68,38 @@ print(images.shape)
 s = np.reshape(images[20,:,:,:],[256,256])
 plt.imshow(s)
 plt.show()
-'''
-img = np.zeros((256,256))
-plt.imshow(img)
-plt.show()
-img[:,31:224] = s
-plt.imshow(img)
-plt.show()
-'''
 
+#%%
+filename = '../Documents/MRI_data/dataset/X/100610_T1w_restore.1.60.nii.gz'
+images = []
+a = nib.load(filename)
+a = a.get_data()
+mid = int(a.shape[2]/2)
+a = a[:,:,mid-25:mid+25]
+for i in range(a.shape[2]):
+    temp = rotate(a[:,:,i],90, resize = True)
+    temp = pad_zero_margins(temp,136)
+    temp = resize(temp, (256,256))
+    images.append(temp)
+images = np.asarray(images)
+images = images.reshape(-1,images.shape[1],images.shape[2],1)
+m = np.max(images)
+mi = np.min(images)
+images = (images - mi)/(m - mi)
+#%%
+print(images.shape)
+
+s = images[25,:,:,0]
+print(s.shape)
+plt.imshow(s)
+#%%
+img = np.zeros((136,136))
+plt.imshow(img)
+img[:,12:125] = s
+plt.imshow(img)
+img = resize(img, (256,256))
+plt.imshow(img)
+#%%
+img2 = pad_zero_margins(s, 136)
+print(img2.shape)
+plt.imshow(img2)
