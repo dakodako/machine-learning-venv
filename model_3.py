@@ -282,7 +282,7 @@ plt.imshow(curr_img, cmap='gray')
 #%%
 
 batch_size = 2
-epochs = 500
+epochs = 50
 inChannel = 1
 x, y = 256, 256
 input_img = Input(shape = (x,y,inChannel))
@@ -304,7 +304,7 @@ test_X = open_images(filepath_test_X)
 test_ground = open_images(filepath_test_ground)
 
 pred = autoencoder.predict(test_X)
-plt.figure(figsize=(20, 4))
+pda lt.figure(figsize=(20, 4))
 print("Test Images inputs")
 for i in range(5):
     plt.subplot(1, 5, i + 1)
