@@ -294,7 +294,7 @@ autoencoder.summary()
 #%%
 #tensorboard = TensorBoard(log_dir="autoencoder2_data_aug_logs/{}".format(time()))
 #autoencoder.fit_generator(datagen.flow(train_X, train_ground, batch_size = batch_size),steps_per_epoch =300, epochs = epochs,validation_data = datagen.flow(valid_X, valid_ground, batch_size = 1),validation_steps = 170, callbacks=[tensorboard])
-autoencoder.fit_generator(datagen.flow(train_X, train_ground, batch_size = batch_size),steps_per_epoch =300, epochs = epochs,validation_data = datagen.flow(valid_X, valid_ground, batch_size = 1),validation_steps = 170)
+#autoencoder.fit_generator(datagen.flow(train_X, train_ground, batch_size = batch_size),steps_per_epoch =300, epochs = epochs,validation_data = datagen.flow(valid_X, valid_ground, batch_size = 1),validation_steps = 170)
 #autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
 autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground))
 #loss = autoencoder_train.history['loss']
