@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/Users/didichi/anaconda3/envs/tensorflow_env/bin/python",
+    "python.pythonPath": "/anaconda3/envs/ml-venv/bin/python",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true
 }

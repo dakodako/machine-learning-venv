@@ -1,10 +1,10 @@
 #
 
 #%%
-import pydicom
+#import pydicom
 from keras import models
 from keras.models import load_model
-from pydicom.data import get_testdata_files
+#from pydicom.data import get_testdata_files
 import numpy as np
 import matplotlib.pyplot as plt
 #from scipy.misc import imresize, imrotate
@@ -39,7 +39,7 @@ def open_images(filepath):
     return images
 
 #%%
-model = load_model('autoencoder2_petra.h5')
+model = load_model('autoencoder2_petra_data_aug.h5')
 model.summary()
 
 #%%
@@ -99,3 +99,9 @@ for i in range(5):
     plt.subplot(1, 5, i+1)
     plt.imshow(pred[k, ..., 0], cmap='gray')  
 plt.show()
+
+
+#%% 
+
+loss = np.mean(np.square(test_ground - pred))
+print(loss)
