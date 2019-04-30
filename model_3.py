@@ -258,6 +258,7 @@ datagen = ImageDataGenerator(
 	fill_mode = 'nearest'
 )
 #%%
+'''
 # Display the first image in training data
 plt.subplot(121)
 curr_img = np.reshape(train_X[0], (256,256))
@@ -279,27 +280,27 @@ plt.imshow(curr_img, cmap='gray')
 plt.subplot(122)
 curr_img = np.reshape(valid_ground[0], (256,256))
 plt.imshow(curr_img, cmap='gray')
-
+'''
 #%%
 
 batch_size = 1
-epochs = 5
+epochs = 30
 inChannel = 1
 x, y = 256, 256
 input_img = Input(shape = (x,y,inChannel))
-autoencoder = Model(input_img, unet3(input_img))
+autoencoder = Model(input_img, unet2(input_img))
 #rmsprop = optimizers.RMSprop(lr = 0.01)
 autoencoder.compile(loss='mean_squared_error', optimizer = Adam())
 autoencoder.summary()
 #%%
 #tensorboard = TensorBoard(log_dir="autoencoder2_data_aug_logs/{}".format(time()))
 #autoencoder.fit_generator(datagen.flow(train_X, train_ground, batch_size = batch_size),steps_per_epoch =300, epochs = epochs,validation_data = datagen.flow(valid_X, valid_ground, batch_size = 1),validation_steps = 170, callbacks=[tensorboard])
-autoencoder.fit_generator(datagen.flow(train_X, train_ground, batch_size = batch_size),steps_per_epoch =300, epochs = epochs,validation_data = datagen.flow(valid_X, valid_ground, batch_size = 1),validation_steps = 170)
+#autoencoder.fit_generator(datagen.flow(train_X, train_ground, batch_size = batch_size),steps_per_epoch =300, epochs = epochs,validation_data = datagen.flow(valid_X, valid_ground, batch_size = 1),validation_steps = 170)
 #autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground), callbacks=[tensorboard])
 autoencoder_train = autoencoder.fit(train_X, train_ground, batch_size=batch_size,epochs=epochs,verbose=1,validation_data=(valid_X, valid_ground))
 #loss = autoencoder_train.history['loss']
 #val_loss = autoencoder_train.history['val_loss']
-autoencoder.save('autoencoder2_petra2.h5')
+autoencoder.save('autoencoder2_petra3.h5')
 '''
 #%%
 filepath_test_X = sys.argv[3]#'../Documents/MRI_data/dataset/X/*'#sys.argv[3]
