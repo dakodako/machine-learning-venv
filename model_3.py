@@ -284,7 +284,7 @@ plt.imshow(curr_img, cmap='gray')
 #%%
 
 batch_size = 1
-epochs = 30
+epochs = 100
 inChannel = 1
 x, y = 256, 256
 input_img = Input(shape = (x,y,inChannel))
