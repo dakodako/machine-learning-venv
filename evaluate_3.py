@@ -39,7 +39,7 @@ def open_images(filepath):
     return images
 
 #%%
-model = load_model('autoencoder2_petra2.h5')
+model = load_model('autoencoder2_petra.h5')
 model.summary()
 
 #%%

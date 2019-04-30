@@ -5,6 +5,9 @@ import numpy as np
 import glob
 from matplotlib import pyplot as plt
 from skimage.transform import rotate, resize
+import tensorflow as tf
+import keras
+import os
 #%%
 def pad_zero_margins(input_img, size):
     width = input_img.shape[1]
@@ -103,3 +106,12 @@ plt.imshow(img)
 img2 = pad_zero_margins(s, 136)
 print(img2.shape)
 plt.imshow(img2)
+
+#%%
+_URL = 'https://people.eecs.berkeley.edu/~tinghuiz/projects/pix2pix/datasets/facades.tar.gz'
+
+path_to_zip = keras.utils.get_file('facades.tar.gz',
+                                      origin=_URL,
+                                      extract=True)
+
+PATH = os.path.join(os.path.dirname(path_to_zip), 'facades/')

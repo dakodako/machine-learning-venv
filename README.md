@@ -60,5 +60,9 @@ https://au.mathworks.com/help/images/registering-multimodal-mri-images.html
 https://au.mathworks.com/help/images/registering-multimodal-3-d-medical-images.html
 
 
+### Watch GPU usage
+
+watch -n 1 nvidia-smi
+
 
 
