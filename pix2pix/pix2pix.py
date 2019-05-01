@@ -48,7 +48,7 @@ class DataLoader():
             img = img.get_data()
             _,_,w = img.shape
             _w = int(w/2)
-            img_A, img_B = img[:,:_w], img[:,_w:]
+            img_A, img_B = img[:,:,:_w], img[:,:,_w:]
             img_A = resize(img_A, self.img_res)
             img_B = resize(img_B, self.img_res)
             if not is_testing and np.random.random() <0.5 and is_jitter:
@@ -97,7 +97,7 @@ class DataLoader():
                 img = img.get_data()
                 _,_,w = img.shape
                 _w = int(w/2)
-                img_A, img_B = img[:,:_w], img[:,_w:]
+                img_A, img_B = img[:,:,:_w], img[:,:,_w:]
                 img_A = resize(img_A, self.img_res)
                 img_B = resize(img_B, self.img_res)
                 if not is_testing and np.random.random() <0.5 and is_jitter:
@@ -313,4 +313,7 @@ class Pix2Pix():
 if __name__ == '__main__':
     gan = Pix2Pix()
     gan.train(epochs=200, batch_size=1, sample_interval=200)
+
+#%%
+
 
