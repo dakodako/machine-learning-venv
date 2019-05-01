@@ -1,4 +1,11 @@
+#%%
 from __future__ import print_function, division
+from glob import glob
+import numpy as np
+from matplotlib import pyplot as plt
+from skimage.io import imread
+from skimage.transform import resize, rotate
+import nibabel as nib 
 import scipy
 from keras.optimizers import Adam
 from keras.layers import Input, Dense, Reshape, Flatten, Dropout, Concatenate
@@ -6,11 +13,115 @@ from keras.layers import BatchNormalization, Activation, ZeroPadding2D
 from keras.layers.advanced_activations import LeakyReLU
 from keras.layers.convolutional import UpSampling2D, Conv2D
 from keras.models import Sequential, Model
-import numpy as np
-from matplotlib import pyplot as plt
+#%%
+#from data_loader import DataLoader
 import sys
 import os
 import datetime
+#%%
+class DataLoader():
+    def __init__(self, dataset_name, img_res = (128,128)):
+        self.img_res = img_res
+        self.dataset_name = dataset_name
+
+    def load_data(self, batch_size = 1, is_testing = False, is_jitter = True):
+        def randomCrop(img , mask, width, height):
+            assert img.shape[0] >= height
+            assert img.shape[1] >= width
+            assert img.shape[0] == mask.shape[0]
+            assert img.shape[1] == mask.shape[1]
+            x = np.random.randint(0, img.shape[1] - width)
+            y = np.random.randint(0, img.shape[0] - height)
+            img = img[y:y+height, x:x+width]
+            mask = mask[y:y+height, x:x+width]
+            return img, mask
+    
+        data_type = "train" if not is_testing else "test"
+        path = glob('/Users/chid/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
+        #path = glob('/Users/chid/.keras/datasets/facades/train/*')
+        batch_images = np.random.choice(path, size = batch_size)
+        imgs_A = []
+        imgs_B = []
+        for img_path in batch_images:
+            img = nib.load(img_path)
+            img = img.get_data()
+            _,w = img.shape
+            _w = int(w/2)
+            img_A, img_B = img[:,:_w], img[:,_w:]
+            img_A = resize(img_A, self.img_res)
+            img_B = resize(img_B, self.img_res)
+            if not is_testing and np.random.random() <0.5 and is_jitter:
+                # 1. Resize an image to bigger height and width
+                img_A = resize(img_A, (img_A.shape[0] + 64, img_A.shape[1] + 64))
+                img_B = resize(img_B, (img_B.shape[0] + 64, img_B.shape[1] + 64))
+                # 2. Randomly crop the image
+                img_A, img_B = randomCrop(img_A, img_B, self.img_res[0], self.img_res[1])
+                # 3. Randomly flip the image horizontally
+                img_A = np.fliplr(img_A)
+                img_B = np.fliplr(img_B)
+            m_A = np.max(img_A)
+            mi_A = np.min(img_A)
+            img_A = (img_A - mi_A)/(m_A - mi_A)
+            m_B = np.max(img_B)
+            mi_B = np.min(img_B)
+            img_B = (img_B - mi_B)/(m_B - mi_B)
+            imgs_A.append(img_A)
+            imgs_B.append(img_B)
+        imgs_A = np.asarray(imgs_A, dtype=float)
+        imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
+        imgs_B = np.asarray(imgs_B, dtype = float)
+        imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1],imgs_B.shape[2],1))
+        return imgs_A, imgs_B
+    
+    def load_batch(self, batch_size = 1, is_testing = False, is_jitter = True):
+        def randomCrop(img , mask, width, height):
+            assert img.shape[0] >= height
+            assert img.shape[1] >= width
+            assert img.shape[0] == mask.shape[0]
+            assert img.shape[1] == mask.shape[1]
+            x = np.random.randint(0, img.shape[1] - width)
+            y = np.random.randint(0, img.shape[0] - height)
+            img = img[y:y+height, x:x+width]
+            mask = mask[y:y+height, x:x+width]
+            return img, mask
+        data_type = "train" if not is_testing else "test"
+        path = glob('/Users/chid/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
+        self.n_batches = int(len(path) / batch_size)
+        for i in range(self.n_batches-1):
+            batch = path[i*batch_size:(i+1)*batch_size]
+            imgs_A, imgs_B = [], []
+            for img in batch:
+                img = nib.load(img)
+                img = img.get_data()
+                _,w = img.shape
+                _w = int(w/2)
+                img_A, img_B = img[:,:_w], img[:,_w:]
+                img_A = resize(img_A, self.img_res)
+                img_B = resize(img_B, self.img_res)
+                if not is_testing and np.random.random() <0.5 and is_jitter:
+                    # 1. Resize an image to bigger height and width
+                    img_A = resize(img_A, (img_A.shape[0] + 64, img_A.shape[1] + 64))
+                    img_B = resize(img_B, (img_B.shape[0] + 64, img_B.shape[1] + 64))
+                    # 2. Randomly crop the image
+                    img_A, img_B = randomCrop(img_A, img_B, self.img_res[0], self.img_res[1])
+                    # 3. Randomly flip the image horizontally
+                    img_A = np.fliplr(img_A)
+                    img_B = np.fliplr(img_B)
+                m_A = np.max(img_A)
+                mi_A = np.min(img_A)
+                img_A = (img_A - mi_A)/(m_A - mi_A)
+                m_B = np.max(img_B)
+                mi_B = np.min(img_B)
+                img_B = (img_B - mi_B)/(m_B - mi_B)
+                imgs_A.append(img_A)
+                imgs_B.append(img_B)
+        imgs_A = np.asarray(imgs_A, dtype=float)
+        imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
+        imgs_B = np.asarray(imgs_B, dtype = float)
+        imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1], imgs_B.shape[2],1))
+        yield imgs_A, imgs_B
+    
+#%%
 class Pix2Pix():
     def __init__(self):
         self.img_rows = 256
@@ -18,7 +129,8 @@ class Pix2Pix():
         self.channels = 1
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
         # configure data loader
-
+        self.dataset_name = 'p2m'
+        self.data_loader = DataLoader(dataset_name = self.dataset_name, img_res = (self.img_rows, self.img_cols))
         # calculate output shape of D (PatchGAN)
         patch = int(self.img_rows/2**4)
         self.disc_patch = (patch, patch, 1)
@@ -165,31 +277,41 @@ class Pix2Pix():
 
     def sample_images(self, epoch, batch_i):
         os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
-        r, c = 3, 3
+        r, c = 3, 3 # row and col
 
         imgs_A, imgs_B = self.data_loader.load_data(batch_size=3, is_testing=True)
         fake_A = self.generator.predict(imgs_B)
-
+        #print(imgs_A.shape)
+        #print(imgs_B.shape)
+        #print(fake_A.shape)
         gen_imgs = np.concatenate([imgs_B, fake_A, imgs_A])
 
         # Rescale images 0 - 1
-        gen_imgs = 0.5 * gen_imgs + 0.5
+        #gen_imgs = 0.5 * gen_imgs + 0.5
 
         titles = ['Condition', 'Generated', 'Original']
         fig, axs = plt.subplots(r, c)
         cnt = 0
         for i in range(r):
             for j in range(c):
-                axs[i,j].imshow(gen_imgs[cnt])
+                #print(cnt)
+                #print(gen_imgs.shape)
+                #print(gen_imgs[cnt].shape)
+                current_img = gen_imgs[cnt]
+                current_img = np.reshape(current_img, (current_img.shape[0], current_img.shape[1]))
+                #print(current_img.shape)
+                axs[i,j].imshow(current_img, cmap = 'gray')
                 axs[i, j].set_title(titles[i])
                 axs[i,j].axis('off')
                 cnt += 1
         fig.savefig("images/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
         plt.close()
 
-
+#%%
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=200, batch_size=1, sample_interval=200)
+    gan.train(epochs=1, batch_size=1, sample_interval=200)
 
-        
+#%%
+import tensorflow as tf
+print(tf.__version__)
