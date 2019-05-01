@@ -46,7 +46,7 @@ class DataLoader():
         for img_path in batch_images:
             img = nib.load(img_path)
             img = img.get_data()
-            _,w = img.shape
+            _,_,w = img.shape
             _w = int(w/2)
             img_A, img_B = img[:,:_w], img[:,_w:]
             img_A = resize(img_A, self.img_res)
@@ -95,7 +95,7 @@ class DataLoader():
             for img in batch:
                 img = nib.load(img)
                 img = img.get_data()
-                _,w = img.shape
+                _,_,w = img.shape
                 _w = int(w/2)
                 img_A, img_B = img[:,:_w], img[:,_w:]
                 img_A = resize(img_A, self.img_res)
