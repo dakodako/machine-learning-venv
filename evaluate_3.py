@@ -39,7 +39,7 @@ def open_images(filepath):
     return images
 
 #%%
-model = load_model('autoencoder2_petra.h5')
+model = load_model('autoencoder2_petra3.h5')
 model.summary()
 
 #%%
@@ -107,7 +107,7 @@ loss = np.mean(np.square(test_ground - pred))
 print(loss)
 
 #%%
-plt.imshow(pred[0,:,:,0])
+#plt.imshow(pred[0,:,:,0])
 #%%
 print(np.mean(pred[3,:,:,0]))
 print(np.mean(test_ground[3,:,:,0]))
