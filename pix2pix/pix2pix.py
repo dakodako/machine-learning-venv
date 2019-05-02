@@ -65,10 +65,10 @@ class DataLoader():
                 img_B = np.fliplr(img_B)
             m_A = np.max(img_A)
             mi_A = np.min(img_A)
-            img_A = (img_A - mi_A)/(m_A - mi_A)
+            img_A = 2* (img_A - mi_A)/(m_A - mi_A) - 1
             m_B = np.max(img_B)
             mi_B = np.min(img_B)
-            img_B = (img_B - mi_B)/(m_B - mi_B)
+            img_B = 2* (img_B - mi_B)/(m_B - mi_B) -1 
             imgs_A.append(img_A)
             imgs_B.append(img_B)
         imgs_A = np.asarray(imgs_A, dtype=float)
@@ -119,10 +119,10 @@ class DataLoader():
                     img_B = np.fliplr(img_B)
                 m_A = np.max(img_A)
                 mi_A = np.min(img_A)
-                img_A = (img_A - mi_A)/(m_A - mi_A)
+                img_A = 2* (img_A - mi_A)/(m_A - mi_A) - 1
                 m_B = np.max(img_B)
                 mi_B = np.min(img_B)
-                img_B = (img_B - mi_B)/(m_B - mi_B)
+                img_B = 2* (img_B - mi_B)/(m_B - mi_B) - 1
                 imgs_A.append(img_A)
                 imgs_B.append(img_B)
         imgs_A = np.asarray(imgs_A, dtype=float)
@@ -298,7 +298,7 @@ class Pix2Pix():
         gen_imgs = np.concatenate([imgs_B, fake_A, imgs_A])
 
         # Rescale images 0 - 1
-        #gen_imgs = 0.5 * gen_imgs + 0.5
+        gen_imgs = 0.5 * gen_imgs + 0.5
 
         titles = ['Condition', 'Generated', 'Original']
         fig, axs = plt.subplots(r, c)
