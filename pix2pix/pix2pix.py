@@ -38,7 +38,7 @@ class DataLoader():
     
         data_type = "train" if not is_testing else "test"
         path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' %(self.dataset_name,data_type))
-        #path = glob('/Users/chid/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
+        #path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
         #path = glob('/Users/chid/.keras/datasets/facades/train/*')
         batch_images = np.random.choice(path, size = batch_size)
         imgs_A = []
@@ -49,8 +49,10 @@ class DataLoader():
             _,_,w = img.shape
             _w = int(w/2)
             img_A, img_B = img[:,:,:_w], img[:,:,_w:]
-            img_A = resize(img_A, self.img_res)
-            img_B = resize(img_B, self.img_res)
+            img_A = np.squeeze(img_A)
+            img_B = np.squeeze(img_B)
+            img_A = resize(img_A, (self.img_res[0],self.img_res[1]))
+            img_B = resize(img_B, (self.img_res[0],self.img_res[1]))
             if not is_testing and np.random.random() <0.5 and is_jitter:
                 # 1. Resize an image to bigger height and width
                 img_A = resize(img_A, (img_A.shape[0] + 64, img_A.shape[1] + 64))
@@ -69,9 +71,9 @@ class DataLoader():
             imgs_A.append(img_A)
             imgs_B.append(img_B)
         imgs_A = np.asarray(imgs_A, dtype=float)
-        imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
+        #imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
         imgs_B = np.asarray(imgs_B, dtype = float)
-        imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1],imgs_B.shape[2],1))
+        #imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1],imgs_B.shape[2],1))
         return imgs_A, imgs_B
     
     def load_batch(self, batch_size = 1, is_testing = False, is_jitter = True):
@@ -86,8 +88,8 @@ class DataLoader():
             mask = mask[y:y+height, x:x+width]
             return img, mask
         data_type = "train" if not is_testing else "test"
-        #path = glob('/Users/chid/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
-        path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' % (self.dataset_name,data_type))
+        #path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
+        path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' % (self.dataset_name,data_type)) 
         self.n_batches = int(len(path) / batch_size)
         for i in range(self.n_batches-1):
             batch = path[i*batch_size:(i+1)*batch_size]
@@ -100,6 +102,8 @@ class DataLoader():
                 img_A, img_B = img[:,:,:_w], img[:,:,_w:]
                 img_A = resize(img_A, self.img_res)
                 img_B = resize(img_B, self.img_res)
+                img_A = np.squeeze(img_A)
+                img_B = np.squeeze(img_B)
                 if not is_testing and np.random.random() <0.5 and is_jitter:
                     # 1. Resize an image to bigger height and width
                     img_A = resize(img_A, (img_A.shape[0] + 64, img_A.shape[1] + 64))
@@ -314,6 +318,5 @@ if __name__ == '__main__':
     gan = Pix2Pix()
     gan.train(epochs=200, batch_size=1, sample_interval=200)
 
-#%%
 
 
