@@ -143,7 +143,7 @@ class Pix2Pix():
         self.dataset_name = 'p2m'
         self.data_loader = DataLoader(dataset_name = self.dataset_name, img_res = (self.img_rows, self.img_cols))
         # calculate output shape of D (PatchGAN)
-        patch = int(self.img_rows/2**4)
+        patch = int(self.img_rows/2**128) # was 4 
         self.disc_patch = (patch, patch, 1)
 
         # number of filters in the first layer of G and D
@@ -156,7 +156,7 @@ class Pix2Pix():
         self.discriminator = self.build_discriminator()
         self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
         # build the generator
-        self.generator = self.build_generator()
+        self.generator = self.build_generator2()
         # input images and their conditioning images
         img_mp2 = Input(shape = self.img_shape) # real image
         img_petra = Input(shape = self.img_shape) # input image
@@ -324,7 +324,7 @@ class Pix2Pix():
         fake = np.zeros((batch_size,) + self.disc_patch)
 
         for epoch in range(epochs):
-            for batch_i, (imgs_A, imgs_B) in enumerate(self.data_loader.load_batch(batch_size)):
+            for batch_i, (imgs_A, imgs_B) in enumerate(self.data_loader.load_batch(batch_size, is_jitter= False)):
 
                 # ---------------------
                 #  Train Discriminator
@@ -363,7 +363,7 @@ class Pix2Pix():
         os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
         r, c = 3, 3 # row and col
 
-        imgs_A, imgs_B = self.data_loader.load_data(batch_size=3, is_testing=True)
+        imgs_A, imgs_B = self.data_loader.load_data(batch_size=3, is_testing=True, is_jitter=False)
         fake_A = self.generator.predict(imgs_B)
         #print(imgs_A.shape)
         #print(imgs_B.shape)
