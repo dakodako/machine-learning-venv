@@ -143,7 +143,7 @@ class Pix2Pix():
         self.dataset_name = 'p2m'
         self.data_loader = DataLoader(dataset_name = self.dataset_name, img_res = (self.img_rows, self.img_cols))
         # calculate output shape of D (PatchGAN)
-        patch = int(self.img_rows/2**128) # was 4 
+        patch = int(self.img_rows/2**4) # was 4 
         self.disc_patch = (patch, patch, 1)
 
         # number of filters in the first layer of G and D
