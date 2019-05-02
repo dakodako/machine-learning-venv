@@ -48,7 +48,8 @@ class DataLoader():
             img = img.get_data()
             _,_,w = img.shape
             _w = int(w/2)
-            img_A, img_B = img[:,:,:_w], img[:,:,_w:]
+            #img_A, img_B = img[:,:,:_w], img[:,:,_w:]
+            img_A, img_B = img[:,:,_w:],img[:,:,:_w]
             img_A = np.squeeze(img_A)
             img_B = np.squeeze(img_B)
             img_A = resize(img_A, (self.img_res[0],self.img_res[1]))
@@ -99,7 +100,8 @@ class DataLoader():
                 img = img.get_data()
                 _,_,w = img.shape
                 _w = int(w/2)
-                img_A, img_B = img[:,:,:_w], img[:,:,_w:]
+                #img_A, img_B = img[:,:,:_w], img[:,:,_w:]
+                img_A, img_B = img[:,:,_w:],img[:,:,:_w]
                 img_A = np.squeeze(img_A)
                 img_B = np.squeeze(img_B)
                 img_A = resize(img_A, (self.img_res[0],self.img_res[1]))
