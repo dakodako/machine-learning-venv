@@ -7,7 +7,7 @@ from skimage.io import imread
 from skimage.transform import resize, rotate
 import nibabel as nib 
 import scipy
-from keras.optimizers import Adam
+from keras.optimizers import Adam, RMSprop
 from keras.layers import Input, Dense, Reshape, Flatten, Dropout, Concatenate
 from keras.layers import BatchNormalization, Activation, ZeroPadding2D
 from keras.layers.advanced_activations import LeakyReLU
