@@ -71,9 +71,9 @@ class DataLoader():
             imgs_A.append(img_A)
             imgs_B.append(img_B)
         imgs_A = np.asarray(imgs_A, dtype=float)
-        #imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
+        imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
         imgs_B = np.asarray(imgs_B, dtype = float)
-        #imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1],imgs_B.shape[2],1))
+        imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1],imgs_B.shape[2],1))
         return imgs_A, imgs_B
     
     def load_batch(self, batch_size = 1, is_testing = False, is_jitter = True):
@@ -100,10 +100,12 @@ class DataLoader():
                 _,_,w = img.shape
                 _w = int(w/2)
                 img_A, img_B = img[:,:,:_w], img[:,:,_w:]
-                img_A = resize(img_A, self.img_res)
-                img_B = resize(img_B, self.img_res)
                 img_A = np.squeeze(img_A)
                 img_B = np.squeeze(img_B)
+                img_A = resize(img_A, (self.img_res[0],self.img_res[1]))
+                img_B = resize(img_B, (self.img_res[0],self.img_res[1]))
+                #print(img_A.shape)
+                #print(img_B.shape)
                 if not is_testing and np.random.random() <0.5 and is_jitter:
                     # 1. Resize an image to bigger height and width
                     img_A = resize(img_A, (img_A.shape[0] + 64, img_A.shape[1] + 64))
@@ -253,10 +255,10 @@ class Pix2Pix():
                 # ---------------------
                 #  Train Discriminator
                 # ---------------------
-
+                #print(imgs_B.shape)
                 # Condition on B and generate a translated version
                 fake_A = self.generator.predict(imgs_B)
-
+                #print(fake_A.shape)
                 # Train the discriminators (original images = real / generated = Fake)
                 d_loss_real = self.discriminator.train_on_batch([imgs_A, imgs_B], valid)
                 d_loss_fake = self.discriminator.train_on_batch([fake_A, imgs_B], fake)
@@ -316,7 +318,14 @@ class Pix2Pix():
 #%%
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=200, batch_size=1, sample_interval=200)
+    gan.train(epochs=1, batch_size=1, sample_interval=200)
 
 
+#%%
 
+#D = DataLoader('p2m',(256,256))
+
+#%%
+#img_A,img_B = D.load_data(3)
+#%%
+#print(img_A.shape)
