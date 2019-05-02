@@ -147,8 +147,8 @@ class Pix2Pix():
         self.gf = 16
         self.df = 16
 
-        optimizer = Adam(0.0002, 0.5)
-
+        #optimizer = Adam(0.0002, 0.5)
+		optimizer = RMSprop(0.01)
         # build and compile the discriminator
         self.discriminator = self.build_discriminator()
         self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
@@ -174,6 +174,7 @@ class Pix2Pix():
             d = LeakyReLU(alpha=0.2)(d)
             if bn:
                 d = BatchNormalization(momentum=0.8)(d)
+			d = Dropout(0.1)(d)
             return d
 
         def deconv2d(layer_input, skip_input, filters, f_size=4, dropout_rate=0):
@@ -191,19 +192,19 @@ class Pix2Pix():
 
         # Downsampling
         d1 = conv2d(d0, self.gf, bn=False)
-        d2 = conv2d(d1, self.gf*2)
-        d3 = conv2d(d2, self.gf*4)
-        d4 = conv2d(d3, self.gf*8)
-        d5 = conv2d(d4, self.gf*8)
-        d6 = conv2d(d5, self.gf*8)
-        d7 = conv2d(d6, self.gf*8)
+        d2 = conv2d(d1, self.gf*2, bn = False)
+        d3 = conv2d(d2, self.gf*4, bn = False)
+        d4 = conv2d(d3, self.gf*8, bn = False)
+        d5 = conv2d(d4, self.gf*8, bn = False)
+        d6 = conv2d(d5, self.gf*8, bn = False)
+        d7 = conv2d(d6, self.gf*8, bn = False)
 
         # Upsampling
         u1 = deconv2d(d7, d6, self.gf*8)
-        u2 = deconv2d(u1, d5, self.gf*8)
-        u3 = deconv2d(u2, d4, self.gf*8)
-        u4 = deconv2d(u3, d3, self.gf*4)
-        u5 = deconv2d(u4, d2, self.gf*2)
+        u2 = deconv2d(u1, d5, self.gf*8, dropout_rate = 0.1)
+        u3 = deconv2d(u2, d4, self.gf*8, dropout_rate = 0.1)
+        u4 = deconv2d(u3, d3, self.gf*4, dropout_rate = 0.1)
+        u5 = deconv2d(u4, d2, self.gf*2, dropout_rate = 0.1)
         u6 = deconv2d(u5, d1, self.gf)
 
         u7 = UpSampling2D(size=2)(u6)
@@ -318,7 +319,7 @@ class Pix2Pix():
 #%%
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=1, batch_size=1, sample_interval=200)
+    gan.train(epochs=100, batch_size=1, sample_interval=200)
 
 
 #%%
