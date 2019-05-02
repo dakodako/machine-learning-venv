@@ -148,7 +148,7 @@ class Pix2Pix():
         self.df = 16
 
         #optimizer = Adam(0.0002, 0.5)
-		optimizer = RMSprop(0.01)
+        optimizer = RMSprop(0.01)
         # build and compile the discriminator
         self.discriminator = self.build_discriminator()
         self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
@@ -174,7 +174,7 @@ class Pix2Pix():
             d = LeakyReLU(alpha=0.2)(d)
             if bn:
                 d = BatchNormalization(momentum=0.8)(d)
-			d = Dropout(0.1)(d)
+            d = Dropout(0.1)(d)
             return d
 
         def deconv2d(layer_input, skip_input, filters, f_size=4, dropout_rate=0):
