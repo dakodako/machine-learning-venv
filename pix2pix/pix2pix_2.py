@@ -11,7 +11,7 @@ from keras.optimizers import Adam, RMSprop
 from keras.layers import Input, Dense, Reshape, Flatten, Dropout, Concatenate
 from keras.layers import BatchNormalization, Activation, ZeroPadding2D
 from keras.layers.advanced_activations import LeakyReLU
-from keras.layers.convolutional import UpSampling2D, Conv2D
+from keras.layers.convolutional import UpSampling2D, Conv2D, Conv2DTranspose
 from keras.models import Sequential, Model
 #%%
 #from data_loader import DataLoader
@@ -182,6 +182,7 @@ class Pix2Pix():
         def deconv2d(layer_input, skip_input, filters, f_size=4, dropout_rate=0):
             """Layers used during upsampling"""
             u = UpSampling2D(size=2)(layer_input)
+            #u = Conv2DTranspose()
             u = Conv2D(filters, kernel_size=f_size, strides=1, padding='same', activation='relu')(u)
             if dropout_rate:
                 u = Dropout(dropout_rate)(u)
@@ -287,6 +288,7 @@ class Pix2Pix():
                     self.sample_images(epoch, batch_i)
         self.discriminator.save('D.h5')
         self.generator.save('G.h5')
+        self.combined.save('combined.h5')
     def sample_images(self, epoch, batch_i):
         os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
         r, c = 3, 3 # row and col
