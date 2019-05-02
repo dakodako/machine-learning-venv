@@ -157,6 +157,7 @@ class Pix2Pix():
         self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
         # build the generator
         self.generator = self.build_generator2()
+        self.generator.summary()
         # input images and their conditioning images
         img_mp2 = Input(shape = self.img_shape) # real image
         img_petra = Input(shape = self.img_shape) # input image
