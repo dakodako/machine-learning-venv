@@ -154,9 +154,10 @@ class Pix2Pix():
         #optimizer = RMSprop(0.01)
         # build and compile the discriminator
         self.discriminator = self.build_discriminator()
-        self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
+        #self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
+        self.discriminator.compile(loss = 'binary_crossentropy', optimizer = optimizer, metrics = ['accuracy'])
         # build the generator
-        self.generator = self.build_generator2()
+        self.generator = self.build_generator()
         self.generator.summary()
         # input images and their conditioning images
         img_mp2 = Input(shape = self.img_shape) # real image
@@ -338,7 +339,7 @@ class Pix2Pix():
                 d_loss_real = self.discriminator.train_on_batch([imgs_A, imgs_B], valid)
                 d_loss_fake = self.discriminator.train_on_batch([fake_A, imgs_B], fake)
                 d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
-
+                print(d_loss.shape)
                 # -----------------
                 #  Train Generator
                 # -----------------
@@ -395,7 +396,7 @@ class Pix2Pix():
 #%%
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=100, batch_size=1, sample_interval=200)
+    gan.train(epochs=1, batch_size=1, sample_interval=200)
 
 
 #%%
