@@ -90,8 +90,10 @@ class DataLoader():
             return img, mask
         data_type = "train" if not is_testing else "test"
         #path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
+        #print(path)
         path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' % (self.dataset_name,data_type)) 
         self.n_batches = int(len(path) / batch_size)
+        print(self.n_batches)
         for i in range(self.n_batches-1):
             batch = path[i*batch_size:(i+1)*batch_size]
             imgs_A, imgs_B = [], []
@@ -125,11 +127,11 @@ class DataLoader():
                 img_B = 2* (img_B - mi_B)/(m_B - mi_B) - 1
                 imgs_A.append(img_A)
                 imgs_B.append(img_B)
-        imgs_A = np.asarray(imgs_A, dtype=float)
-        imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
-        imgs_B = np.asarray(imgs_B, dtype = float)
-        imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1], imgs_B.shape[2],1))
-        yield imgs_A, imgs_B
+            imgs_A = np.asarray(imgs_A, dtype=float)
+            imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
+            imgs_B = np.asarray(imgs_B, dtype = float)
+            imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1], imgs_B.shape[2],1))
+            yield imgs_A, imgs_B
     
 #%%
 class Pix2Pix():
@@ -332,3 +334,10 @@ if __name__ == '__main__':
 #img_A,img_B = D.load_data(3)
 #%%
 #print(img_A.shape)
+
+#%%
+#D = DataLoader('p2m',(256,256))
+#batch_size = 1
+#%%
+#for batch_i, (imgs_A, imgs_B) in enumerate(D.load_batch(batch_size)):
+    #print(batch_i)
