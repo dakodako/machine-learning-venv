@@ -126,11 +126,11 @@ class DataLoader():
                 img_B = 2* (img_B - mi_B)/(m_B - mi_B) - 1
                 imgs_A.append(img_A)
                 imgs_B.append(img_B)
-        imgs_A = np.asarray(imgs_A, dtype=float)
-        imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
-        imgs_B = np.asarray(imgs_B, dtype = float)
-        imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1], imgs_B.shape[2],1))
-        yield imgs_A, imgs_B
+            imgs_A = np.asarray(imgs_A, dtype=float)
+            imgs_A = np.reshape(imgs_A, (-1,imgs_A.shape[1], imgs_A.shape[2],1))
+            imgs_B = np.asarray(imgs_B, dtype = float)
+            imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1], imgs_B.shape[2],1))
+            yield imgs_A, imgs_B
     
 #%%
 class Pix2Pix():
@@ -157,7 +157,7 @@ class Pix2Pix():
         #self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
         self.discriminator.compile(loss = 'binary_crossentropy', optimizer = optimizer, metrics = ['accuracy'])
         # build the generator
-        self.generator = self.build_generator()
+        self.generator = self.build_generator2()
         self.generator.summary()
         # input images and their conditioning images
         img_mp2 = Input(shape = self.img_shape) # real image
@@ -170,7 +170,8 @@ class Pix2Pix():
         valid = self.discriminator([fake_mp2, img_petra])
         
         self.combined = Model(inputs = [img_mp2, img_petra], outputs = [valid, fake_mp2])
-        self.combined.compile(loss = ['mse','mae'], loss_weights=[1,100],optimizer = optimizer)
+        #self.combined.compile(loss = ['mse','mae'], loss_weights=[1,100],optimizer = optimizer)
+        self.combined.compile(loss = ['binary_crossentropy','mae'], loss_weights=[1,100], optimizer = optimizer)
     def build_generator2(self):
 	#s = Lambda(lambda x: x/255)(input_img)
         input_img = Input(shape = self.img_shape)
