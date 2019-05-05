@@ -147,8 +147,8 @@ class Pix2Pix():
         self.disc_patch = (patch, patch, 1)
 
         # number of filters in the first layer of G and D
-        self.gf = 16
-        self.df = 16
+        self.gf = 64
+        self.df = 64
 
         optimizer = Adam(lr = 0.0002, beta_1= 0.5, beta_2=0.999)
         #optimizer = RMSprop(0.01)
