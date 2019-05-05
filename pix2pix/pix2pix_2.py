@@ -154,8 +154,8 @@ class Pix2Pix():
         #optimizer = RMSprop(0.01)
         # build and compile the discriminator
         self.discriminator = self.build_discriminator()
-        #self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
-        self.discriminator.compile(loss = 'binary_crossentropy', optimizer = optimizer, metrics = ['accuracy'])
+        self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
+        #self.discriminator.compile(loss = 'binary_crossentropy', optimizer = optimizer, metrics = ['accuracy'])
         # build the generator
         self.generator = self.build_generator()
         self.generator.summary()
@@ -170,8 +170,8 @@ class Pix2Pix():
         valid = self.discriminator([fake_mp2, img_petra])
         
         self.combined = Model(inputs = [img_mp2, img_petra], outputs = [valid, fake_mp2])
-        #self.combined.compile(loss = ['mse','mae'], loss_weights=[1,100],optimizer = optimizer)
-        self.combined.compile(loss = ['binary_crossentropy','mae'], loss_weights=[1,100], optimizer = optimizer)
+        self.combined.compile(loss = ['mse','mae'], loss_weights=[1,100],optimizer = optimizer)
+        #self.combined.compile(loss = ['binary_crossentropy','mae'], loss_weights=[1,100], optimizer = optimizer)
 
     def build_generator(self):
         '''u-net'''
