@@ -22,7 +22,7 @@ class DataLoader():
 
     def load_data(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "test"
-        path = glob('./datasets/%s/%s/*' % (self.dataset_name, data_type))
+        path = glob('/home/student.unimelb.edu.au/chid/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
 
         batch_images = np.random.choice(path, size=batch_size)
 
@@ -53,7 +53,7 @@ class DataLoader():
 
     def load_batch(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "val"
-        path = glob('./datasets/%s/%s/*' % (self.dataset_name, data_type))
+        path = glob('/home/student.unimelb.edu.au/chid/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
 
         self.n_batches = int(len(path) / batch_size)
 

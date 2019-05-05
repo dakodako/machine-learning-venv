@@ -93,7 +93,7 @@ class DataLoader():
         #print(path)
         path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' % (self.dataset_name,data_type)) 
         self.n_batches = int(len(path) / batch_size)
-        print(self.n_batches)
+        # print(self.n_batches)
         for i in range(self.n_batches-1):
             batch = path[i*batch_size:(i+1)*batch_size]
             imgs_A, imgs_B = [], []
