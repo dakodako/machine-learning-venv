@@ -146,7 +146,7 @@ class Pix2Pix():
         # calculate output shape of D (PatchGAN)
         patch = int(self.img_rows/2**4)
         self.disc_patch = (patch, patch, 1)
-
+        print(self.disc_patch)
         # number of filters in the first layer of G and D
         self.gf = 16
         self.df = 16
@@ -155,7 +155,8 @@ class Pix2Pix():
         #optimizer = RMSprop(0.01)
         # build and compile the discriminator
         self.discriminator = self.build_discriminator()
-        self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
+        #self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
+        self.discriminator.compile(loss = 'binary_crossentropy', optimizer = optimizer, metrics= ['accuracy'])
         # build the generator
         self.generator = self.build_generator()
         # input images and their conditioning images
@@ -169,7 +170,8 @@ class Pix2Pix():
         valid = self.discriminator([fake_mp2, img_petra])
         
         self.combined = Model(inputs = [img_mp2, img_petra], outputs = [valid, fake_mp2])
-        self.combined.compile(loss = ['mse','mae'], loss_weights=[1,100],optimizer = optimizer)
+        #self.combined.compile(loss = ['mse','mae'], loss_weights=[1,100],optimizer = optimizer)
+        self.combined.compile(loss = ['binary_crossentropy','mae'], loss_weights = [1,100], optimizer = optimizer)
     def build_generator(self):
         '''u-net'''
         def conv2d(layer_input, filters, f_size=4, bn=True):
@@ -327,7 +329,7 @@ if __name__ == '__main__':
 
 
 #%%
-
+G = Pix2Pix()
 #D = DataLoader('p2m',(256,256))
 
 #%%
