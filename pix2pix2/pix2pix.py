@@ -111,7 +111,7 @@ class Pix2Pix():
 
         # Build and compile the discriminator
         self.discriminator = self.build_discriminator()
-        self.discriminator.compile(loss='mse',
+        self.discriminator.compile(loss='binary_crossentropy',
             optimizer=optimizer,
             metrics=['accuracy'])
 
@@ -137,7 +137,7 @@ class Pix2Pix():
         valid = self.discriminator([fake_A, img_B])
 
         self.combined = Model(inputs=[img_A, img_B], outputs=[valid, fake_A])
-        self.combined.compile(loss=['mse', 'mae'],
+        self.combined.compile(loss=['binary_crossentropy', 'mae'],
                               loss_weights=[1, 100],
                               optimizer=optimizer)
 
