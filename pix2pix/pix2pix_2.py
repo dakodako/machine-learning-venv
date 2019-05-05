@@ -170,7 +170,7 @@ class Pix2Pix():
         valid = self.discriminator([fake_mp2, img_petra])
         
         self.combined = Model(inputs = [img_mp2, img_petra], outputs = [valid, fake_mp2])
-        self.combined.compile(loss = ['mse','mae'], loss_weights=[1,50],optimizer = optimizer)
+        self.combined.compile(loss = ['mse','mae'], loss_weights=[1,10],optimizer = optimizer)
         #self.combined.compile(loss = ['binary_crossentropy','mae'], loss_weights=[1,100], optimizer = optimizer)
 
     def build_generator(self):
