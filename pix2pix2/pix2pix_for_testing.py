@@ -1,3 +1,4 @@
+#%%
 from __future__ import print_function, division
 import scipy
 from glob import glob
@@ -15,6 +16,7 @@ import datetime
 import matplotlib.pyplot as plt
 import sys
 import os
+#%%
 class DataLoader():
     def __init__(self, dataset_name, img_res=(128, 128)):
         self.dataset_name = dataset_name
@@ -22,7 +24,7 @@ class DataLoader():
 
     def load_data(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "test"
-        path = glob('./datasets/%s/%s/*' % (self.dataset_name, data_type))
+        path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
 
         batch_images = np.random.choice(path, size=batch_size)
 
@@ -53,7 +55,7 @@ class DataLoader():
 
     def load_batch(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "val"
-        path = glob('./datasets/%s/%s/*' % (self.dataset_name, data_type))
+        path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
 
         self.n_batches = int(len(path) / batch_size)
 
@@ -85,6 +87,7 @@ class DataLoader():
 
     def imread(self, path):
         return scipy.misc.imread(path, mode='RGB').astype(np.float)
+#%%
 class Pix2Pix():
     def __init__(self):
         # Input shape
@@ -282,3 +285,10 @@ class Pix2Pix():
 if __name__ == '__main__':
     gan = Pix2Pix()
     gan.train(epochs=200, batch_size=1, sample_interval=200)
+
+#%%
+D = DataLoader('facades',(256,256))
+batch_size = 1
+#%%
+for batch_i, (imgs_A, imgs_B) in enumerate(D.load_batch(batch_size)):
+    print(batch_i)
