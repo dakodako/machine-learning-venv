@@ -143,18 +143,19 @@ class Pix2Pix():
         self.dataset_name = 'p2m'
         self.data_loader = DataLoader(dataset_name = self.dataset_name, img_res = (self.img_rows, self.img_cols))
         # calculate output shape of D (PatchGAN)
-        patch = int(self.img_rows/2**4) # was 4 
+        patch = int(self.img_rows/2**8) # was 4 
         self.disc_patch = (patch, patch, 1)
 
         # number of filters in the first layer of G and D
-        self.gf = 64
-        self.df = 64
+        self.gf = 32
+        self.df = 32
 
         optimizer = Adam(lr = 0.0002, beta_1= 0.5, beta_2=0.999)
         #optimizer = RMSprop(0.01)
         # build and compile the discriminator
         self.discriminator = self.build_discriminator()
         self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
+        self.discriminator.summary()
         #self.discriminator.compile(loss = 'binary_crossentropy', optimizer = optimizer, metrics = ['accuracy'])
         # build the generator
         self.generator = self.build_generator()
@@ -246,8 +247,8 @@ class Pix2Pix():
         d2 = d_layer(d1, self.df*2)
         d3 = d_layer(d2, self.df*4)
         d4 = d_layer(d3, self.df*8)
-
-        validity = Conv2D(1, kernel_size = 4, strides = 1, padding = 'same')(d4)
+        d5 = d_layer(d4, self.df*8)
+        validity = Conv2D(1, kernel_size = 4, strides = 1, padding = 'same')(d5)
 
         return Model([inp, tar], validity)
     def train(self, epochs, batch_size=1, sample_interval=50):
@@ -330,11 +331,11 @@ class Pix2Pix():
 #%%
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=50, batch_size=1, sample_interval=400)
+    gan.train(epochs=1, batch_size=1, sample_interval=400)
 
 
 #%%
-
+G = Pix2Pix()
 #D = DataLoader('p2m',(256,256))
 
 #%%
