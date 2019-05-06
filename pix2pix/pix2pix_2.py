@@ -25,7 +25,7 @@ class DataLoader():
         self.img_res = img_res
         self.dataset_name = dataset_name
 
-    def load_data(self, batch_size = 1, is_testing = False, is_jitter = True):
+    def load_data(self, batch_size = 1, is_testing = False, is_jitter = False):
         def randomCrop(img , mask, width, height):
             assert img.shape[0] >= height
             assert img.shape[1] >= width
@@ -78,7 +78,7 @@ class DataLoader():
         imgs_B = np.reshape(imgs_B, (-1,imgs_B.shape[1],imgs_B.shape[2],1))
         return imgs_A, imgs_B
     
-    def load_batch(self, batch_size = 1, is_testing = False, is_jitter = True):
+    def load_batch(self, batch_size = 1, is_testing = False, is_jitter = False):
         def randomCrop(img , mask, width, height):
             assert img.shape[0] >= height
             assert img.shape[1] >= width
