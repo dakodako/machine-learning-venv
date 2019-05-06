@@ -170,7 +170,7 @@ class Pix2Pix():
         valid = self.discriminator([fake_mp2, img_petra])
         
         self.combined = Model(inputs = [img_mp2, img_petra], outputs = [valid, fake_mp2])
-        self.combined.compile(loss = ['mse','mae'], loss_weights=[1,10],optimizer = optimizer)
+        self.combined.compile(loss = ['mse','mae'], loss_weights=[1,1000],optimizer = optimizer)
         #self.combined.compile(loss = ['binary_crossentropy','mae'], loss_weights=[1,100], optimizer = optimizer)
 
     def build_generator(self):
@@ -296,7 +296,7 @@ class Pix2Pix():
         self.generator.save('G.h5')
         self.combined.save('combined.h5')
     def sample_images(self, epoch, batch_i):
-        os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
+        os.makedirs('images_l1_1000/%s' % self.dataset_name, exist_ok=True)
         r, c = 3, 3 # row and col
 
         imgs_A, imgs_B = self.data_loader.load_data(batch_size=3, is_testing=True, is_jitter=False)
@@ -324,13 +324,13 @@ class Pix2Pix():
                 axs[i, j].set_title(titles[i])
                 axs[i,j].axis('off')
                 cnt += 1
-        fig.savefig("images/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
+        fig.savefig("images_l1_1000/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
         plt.close()
 
 #%%
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=200, batch_size=1, sample_interval=200)
+    gan.train(epochs=50, batch_size=1, sample_interval=200)
 
 
 #%%
