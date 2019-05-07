@@ -352,7 +352,7 @@ class Pix2Pix():
 #%%
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=100, batch_size=1, sample_interval=203)
+    gan.train(epochs=50, batch_size=1, sample_interval=203)
 
 
 #%%
