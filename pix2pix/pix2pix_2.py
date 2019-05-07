@@ -176,21 +176,6 @@ class Pix2Pix():
         
         self.combined = Model(inputs = [img_mp2, img_petra], outputs = [valid, fake_mp2])
         self.combined.compile(loss = ['mse','mae'], loss_weights=[1,100],optimizer = optimizer)
-        self.log_path = "pix2pix_logs/{}".format(time())
-        self.callback = TensorBoard(self.log_path)
-        self.callback.set_model(self.combined)
-        self.train_names = ['train_loss','train_mse_mae']
-        self.val_name = ['val_loss','val_mse_mae']
-        #self.combined.compile(loss = ['binary_crossentropy','mae'], loss_weights=[1,100], optimizer = optimizer)
-    def write_log(self, callback, names, logs, batch_no):
-            for name, value in zip(names, logs):
-                summary = tf.Summary()
-                summary_value = summary.value.add()
-                summary_value.simple_value = value
-                summary_value.tag = name
-                callback.writer.add_summary(summary, batch_no)
-                callback.writer.flush()
-                
 
     def build_generator(self):
         '''u-net'''
@@ -294,7 +279,6 @@ class Pix2Pix():
                 d_loss_real = self.discriminator.train_on_batch([imgs_A, imgs_B], valid)
                 d_loss_fake = self.discriminator.train_on_batch([fake_A, imgs_B], fake)
                 d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
-                self.write_log(self.callback,self.train_names,d_loss_fake, batch_i)
                 # print(d_loss.shape)
                 # -----------------
                 #  Train Generator
