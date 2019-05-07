@@ -140,10 +140,11 @@ class Pix2Pix():
         self.channels = 1
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
         # configure data loader
-        self.dataset_name = 'p2m'
+        self.dataset_name = 'p2m2_test'
         self.data_loader = DataLoader(dataset_name = self.dataset_name, img_res = (self.img_rows, self.img_cols))
         # calculate output shape of D (PatchGAN)
-        patch = int(self.img_rows/2**8) # was 4 
+        patch = int(self.img_rows/8**2) # was 4 
+        #print(patch)
         self.disc_patch = (patch, patch, 1)
 
         # number of filters in the first layer of G and D
@@ -155,11 +156,11 @@ class Pix2Pix():
         # build and compile the discriminator
         self.discriminator = self.build_discriminator()
         self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
-        self.discriminator.summary()
+        #self.discriminator.summary()
         #self.discriminator.compile(loss = 'binary_crossentropy', optimizer = optimizer, metrics = ['accuracy'])
         # build the generator
         self.generator = self.build_generator()
-        self.generator.summary()
+        #self.generator.summary()
         # input images and their conditioning images
         img_mp2 = Input(shape = self.img_shape) # real image
         img_petra = Input(shape = self.img_shape) # input image
@@ -248,7 +249,8 @@ class Pix2Pix():
         d3 = d_layer(d2, self.df*4)
         d4 = d_layer(d3, self.df*8)
         d5 = d_layer(d4, self.df*8)
-        validity = Conv2D(1, kernel_size = 4, strides = 1, padding = 'same')(d5)
+        d6 = d_layer(d5, self.df*8)
+        validity = Conv2D(1, kernel_size = 4, strides = 1, padding = 'same')(d6)
 
         return Model([inp, tar], validity)
     def train(self, epochs, batch_size=1, sample_interval=50):
@@ -258,6 +260,7 @@ class Pix2Pix():
         # Adversarial loss ground truths
         valid = np.ones((batch_size,) + self.disc_patch)
         fake = np.zeros((batch_size,) + self.disc_patch)
+        #print(self.disc_patch)
         #print(valid.shape)
         #print(fake.shape)
         for epoch in range(epochs):
@@ -331,11 +334,11 @@ class Pix2Pix():
 #%%
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=1, batch_size=1, sample_interval=400)
+    gan.train(epochs=100, batch_size=1, sample_interval=203)
 
 
 #%%
-G = Pix2Pix()
+#G = Pix2Pix()
 #D = DataLoader('p2m',(256,256))
 
 #%%
