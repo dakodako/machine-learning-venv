@@ -176,7 +176,19 @@ class Pix2Pix():
         
         self.combined = Model(inputs = [img_mp2, img_petra], outputs = [valid, fake_mp2])
         self.combined.compile(loss = ['mse','mae'], loss_weights=[1,100],optimizer = optimizer)
-
+        log_path = "./p2m_logs/{}".format(time())
+        self.callback = TensorBoard(log_path)
+        self.callback.set_model(self.combined)
+        self.train_names = ['gan_loss']
+        #self.val_names = ['val_loss', 'val_mae']
+    def write_log(self, callback, names, logs, batch_no):
+        for name, value in zip(names, logs):
+            summary = tf.Summary()
+            summary_value = summary.value.add()
+            summary_value.simple_value = value
+            summary_value.tag = name
+            callback.writer.add_summary(summary, batch_no)
+            callback.writer.flush() 
     def build_generator(self):
         '''u-net'''
         def conv2d(layer_input, filters, f_size=4, bn=True):
@@ -286,7 +298,7 @@ class Pix2Pix():
 
                 # Train the generators
                 g_loss = self.combined.train_on_batch([imgs_A, imgs_B], [valid, imgs_A])
-
+                self.write_log(self.callback, self.train_names,g_loss, batch_i)
                 elapsed_time = datetime.datetime.now() - start_time
                 # Plot the progress
                 print ("[Epoch %d/%d] [Batch %d/%d] [D loss: %f, acc: %3d%%] [G loss: %f] time: %s" % (epoch, epochs,
