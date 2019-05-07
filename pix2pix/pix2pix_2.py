@@ -14,11 +14,14 @@ from keras.layers.advanced_activations import LeakyReLU
 from keras.layers.convolutional import UpSampling2D, Conv2D, Conv2DTranspose
 from keras.models import Sequential, Model
 from keras.layers.merge import concatenate
+from keras.callbacks import TensorBoard
+import tensorflow as tf
 #%%
 #from data_loader import DataLoader
 import sys
 import os
 import datetime
+from time import time
 #%%
 class DataLoader():
     def __init__(self, dataset_name, img_res = (128,128)):
@@ -38,8 +41,8 @@ class DataLoader():
             return img, mask
     
         data_type = "train" if not is_testing else "test"
-        path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' %(self.dataset_name,data_type))
-        #path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
+        #path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' %(self.dataset_name,data_type))
+        path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
         #path = glob('/Users/chid/.keras/datasets/facades/train/*')
         batch_images = np.random.choice(path, size = batch_size)
         imgs_A = []
@@ -90,8 +93,8 @@ class DataLoader():
             mask = mask[y:y+height, x:x+width]
             return img, mask
         data_type = "train" if not is_testing else "test"
-        #path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
-        path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' % (self.dataset_name,data_type)) 
+        path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
+        #path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' % (self.dataset_name,data_type)) 
         self.n_batches = int(len(path) / batch_size)
         for i in range(self.n_batches-1):
             batch = path[i*batch_size:(i+1)*batch_size]
@@ -140,7 +143,7 @@ class Pix2Pix():
         self.channels = 1
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
         # configure data loader
-        self.dataset_name = 'p2m2_test'
+        self.dataset_name = 'p2m'
         self.data_loader = DataLoader(dataset_name = self.dataset_name, img_res = (self.img_rows, self.img_cols))
         # calculate output shape of D (PatchGAN)
         patch = int(self.img_rows/8**2) # was 4 
@@ -173,7 +176,21 @@ class Pix2Pix():
         
         self.combined = Model(inputs = [img_mp2, img_petra], outputs = [valid, fake_mp2])
         self.combined.compile(loss = ['mse','mae'], loss_weights=[1,100],optimizer = optimizer)
+        self.log_path = "pix2pix_logs/{}".format(time())
+        self.callback = TensorBoard(self.log_path)
+        self.callback.set_model(self.combined)
+        self.train_names = ['train_loss','train_mse_mae']
+        self.val_name = ['val_loss','val_mse_mae']
         #self.combined.compile(loss = ['binary_crossentropy','mae'], loss_weights=[1,100], optimizer = optimizer)
+    def write_log(self, callback, names, logs, batch_no):
+            for name, value in zip(names, logs):
+                summary = tf.Summary()
+                summary_value = summary.value.add()
+                summary_value.simple_value = value
+                summary_value.tag = name
+                callback.writer.add_summary(summary, batch_no)
+                callback.writer.flush()
+                
 
     def build_generator(self):
         '''u-net'''
@@ -254,7 +271,7 @@ class Pix2Pix():
 
         return Model([inp, tar], validity)
     def train(self, epochs, batch_size=1, sample_interval=50):
-
+        
         start_time = datetime.datetime.now()
 
         # Adversarial loss ground truths
@@ -277,6 +294,7 @@ class Pix2Pix():
                 d_loss_real = self.discriminator.train_on_batch([imgs_A, imgs_B], valid)
                 d_loss_fake = self.discriminator.train_on_batch([fake_A, imgs_B], fake)
                 d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
+                self.write_log(self.callback,self.train_names,d_loss_fake, batch_i)
                 # print(d_loss.shape)
                 # -----------------
                 #  Train Generator
@@ -339,6 +357,8 @@ if __name__ == '__main__':
 
 #%%
 #G = Pix2Pix()
+#%%
+#G.train(epochs = 1, batch_size = 1, sample_interval=200)
 #D = DataLoader('p2m',(256,256))
 
 #%%
