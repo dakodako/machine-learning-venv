@@ -41,8 +41,8 @@ class DataLoader():
             return img, mask
     
         data_type = "train" if not is_testing else "test"
-        #path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' %(self.dataset_name,data_type))
-        path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
+        path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' %(self.dataset_name,data_type))
+        #path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
         #path = glob('/Users/chid/.keras/datasets/facades/train/*')
         batch_images = np.random.choice(path, size = batch_size)
         imgs_A = []
@@ -93,8 +93,8 @@ class DataLoader():
             mask = mask[y:y+height, x:x+width]
             return img, mask
         data_type = "train" if not is_testing else "test"
-        path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
-        #path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' % (self.dataset_name,data_type)) 
+        #path = glob('/Users/didichi/.keras/datasets/%s/%s/*' % (self.dataset_name, data_type))
+        path = glob('/home/student.unimelb.edu.au/chid/Documents/MRI_data/MRI_data/Daris/%s/%s/*' % (self.dataset_name,data_type)) 
         self.n_batches = int(len(path) / batch_size)
         for i in range(self.n_batches-1):
             batch = path[i*batch_size:(i+1)*batch_size]
@@ -339,13 +339,4 @@ if __name__ == '__main__':
     gan.train(epochs=50, batch_size=1, sample_interval=203)
 
 
-#%%
-#G = Pix2Pix()
-#%%
-#G.train(epochs = 1, batch_size = 1, sample_interval=200)
-#D = DataLoader('p2m',(256,256))
 
-#%%
-#img_A,img_B = D.load_data(3)
-#%%
-#print(img_A.shape)
