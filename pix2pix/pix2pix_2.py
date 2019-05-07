@@ -143,7 +143,7 @@ class Pix2Pix():
         self.channels = 1
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
         # configure data loader
-        self.dataset_name = 'p2m'
+        self.dataset_name = 'p2m2_test'
         self.data_loader = DataLoader(dataset_name = self.dataset_name, img_res = (self.img_rows, self.img_cols))
         # calculate output shape of D (PatchGAN)
         patch = int(self.img_rows/8**2) # was 4 
@@ -348,7 +348,7 @@ class Pix2Pix():
 #%%
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=50, batch_size=1, sample_interval=203)
+    gan.train(epochs=100, batch_size=1, sample_interval=203)
 
 
 
