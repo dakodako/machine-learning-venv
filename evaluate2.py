@@ -52,10 +52,11 @@ plt.show()
 layer_outputs = [layer.output for layer in model.layers[:36]]
 print(len(layer_outputs))
 activation_model = models.Model(inputs = model.input, outputs = layer_outputs)
-'''
+
 #%%
 activations = activation_model.predict(test_img_tensor)
 print(len(activations))
+'''
 #%%
 first_layer_activation = activations[35]
 print(first_layer_activation.shape)
