@@ -56,11 +56,11 @@ activation_model = models.Model(inputs = model.input, outputs = layer_outputs)
 #%%
 activations = activation_model.predict(test_img_tensor)
 print(len(activations))
-'''
+
 #%%
 first_layer_activation = activations[35]
 print(first_layer_activation.shape)
-
+'''
 #plt.matshow(first_layer_activation[0,:,:,25], cmap = 'viridis')
 #%%
 print(len(model.layers))
