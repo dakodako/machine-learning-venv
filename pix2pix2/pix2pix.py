@@ -232,7 +232,7 @@ class Pix2Pix():
                 # Train the discriminators (original images = real / generated = Fake)
                 d_loss_real = self.discriminator.train_on_batch([imgs_A, imgs_B], valid)
                 d_loss_fake = self.discriminator.train_on_batch([fake_A, imgs_B], fake)
-                d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
+                #d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
 
                 # -----------------
                 #  Train Generator
@@ -245,7 +245,7 @@ class Pix2Pix():
                 # Plot the progress
                 print ("[Epoch %d/%d] [Batch %d/%d] [D real loss: %f, D fake loss: %f] [G loss: %f] time: %s" % (epoch, epochs,
                                                                         batch_i, self.data_loader.n_batches,
-                                                                        d_real_loss, d_fake_loss,
+                                                                        d_loss_real, d_loss_fake,
                                                                         g_loss[0],
                                                                         elapsed_time))
 
