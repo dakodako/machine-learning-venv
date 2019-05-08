@@ -112,8 +112,7 @@ class Pix2Pix():
         # Build and compile the discriminator
         self.discriminator = self.build_discriminator()
         self.discriminator.compile(loss='binary_crossentropy',
-            optimizer=optimizer,
-            metrics=['accuracy'])
+            optimizer=optimizer)
 
         #-------------------------
         # Construct Computational
@@ -244,9 +243,9 @@ class Pix2Pix():
 
                 elapsed_time = datetime.datetime.now() - start_time
                 # Plot the progress
-                print ("[Epoch %d/%d] [Batch %d/%d] [D loss: %f, acc: %3d%%] [G loss: %f] time: %s" % (epoch, epochs,
+                print ("[Epoch %d/%d] [Batch %d/%d] [D real loss: %f, D fake loss: %f] [G loss: %f] time: %s" % (epoch, epochs,
                                                                         batch_i, self.data_loader.n_batches,
-                                                                        d_loss[0], 100*d_loss[1],
+                                                                        d_real_loss, d_fake_loss,
                                                                         g_loss[0],
                                                                         elapsed_time))
 
