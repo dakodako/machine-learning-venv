@@ -47,11 +47,12 @@ pred = model.predict(test_img_tensor)
 print(pred.shape)
 plt.imshow(pred[0,:,:,0], cmap = 'gray')
 plt.show()
-'''
+
 #%%
 layer_outputs = [layer.output for layer in model.layers[:36]]
 print(len(layer_outputs))
 activation_model = models.Model(inputs = model.input, outputs = layer_outputs)
+'''
 #%%
 activations = activation_model.predict(test_img_tensor)
 print(len(activations))
