@@ -51,7 +51,7 @@ print(test_X.shape)
 test_img = test_X[10,:,:,:]
 test_img_tensor = np.expand_dims(test_img, axis = 0)
 print(test_img_tensor.shape)
-layer_outputs = [layer.output for layer in model.layers[:36]]
+layer_outputs = [layer.output for layer in model.layers[:59]]
 print(len(layer_outputs))
 #%%
 activation_model = models.Model(inputs = model.input, outputs = layer_outputs)
