@@ -57,7 +57,7 @@ print(len(layer_outputs))
 activation_model = models.Model(inputs = model.input, outputs = layer_outputs)
 activations = activation_model.predict(test_img_tensor)
 print(len(activations))
-'''
+
 #%%
 layer_names = []
 for layer in model.layers[:36]:
@@ -91,8 +91,7 @@ for layer_name, layer_activation in zip(layer_names, activations):
         print(display_grid.shape)
         plt.title(layer_name)
         plt.grid(False)
-        figname = 'activations/'+layer_name + '.png'
+        figname = 'activations/p2m/'+layer_name + '.png'
         plt.imshow(display_grid, aspect='auto',cmap='gray')
         plt.show()
         fig.savefig(figname, dpi=fig.dpi)
-'''
