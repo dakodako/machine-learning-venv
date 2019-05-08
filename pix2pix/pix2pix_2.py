@@ -147,7 +147,7 @@ class Pix2Pix():
         self.data_loader = DataLoader(dataset_name = self.dataset_name, img_res = (self.img_rows, self.img_cols))
         # calculate output shape of D (PatchGAN)
         patch = int(self.img_rows/4**2) # was 4 
-        patch = int(self.img_rows/8**2)
+        #patch = int(self.img_rows/8**2)
         #print(patch)
         self.disc_patch = (patch, patch, 1)
 
