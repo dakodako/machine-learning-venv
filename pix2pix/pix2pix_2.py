@@ -315,7 +315,7 @@ class Pix2Pix():
         #self.generator.save('G.h5')
         #self.combined.save('combined.h5')
     def sample_images(self, epoch, batch_i):
-        os.makedirs('images_patch_8/%s' % self.dataset_name, exist_ok=True)
+        os.makedirs('images_patch_16/%s' % self.dataset_name, exist_ok=True)
         r, c = 3, 3 # row and col
 
         imgs_A, imgs_B = self.data_loader.load_data(batch_size=3, is_testing=True, is_jitter=False)
@@ -343,7 +343,7 @@ class Pix2Pix():
                 axs[i, j].set_title(titles[i])
                 axs[i,j].axis('off')
                 cnt += 1
-        fig.savefig("images_patch_8/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
+        fig.savefig("images_patch_16/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
         plt.close()
 
 #%%
