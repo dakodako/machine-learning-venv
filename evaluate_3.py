@@ -41,16 +41,29 @@ def open_images(filepath):
 #%%
 model = load_model('autoencoder2_petra3.h5')
 model.summary()
-
+#%%
+print(len(model.layers))
 #%%
 filepath_test_X = 'PETRA2/*'
 filepath_test_ground = 'MP2RAGE2/*'
 test_X = open_images(filepath_test_X)
 test_ground = open_images(filepath_test_ground)
-
+print(test_X.shape)
 #%%
-pred = model.predict(test_X)
+test_img = test_X[10,:,:,:]
+test_img_tensor = np.expand_dims(test_img, axis = 0)
+print(test_img_tensor.shape)
+#%%
+pred = model.predict(test_img_tensor)
 print(pred.shape)
+#%%
+layer_outputs = [layer.output for layer in model.layers[:36]]
+print(len(layer_outputs))
+#%%
+
+activation_model = models.Model(inputs = model.input, outputs = layer_outputs)
+activations = activation_model.predict(test_img_tensor)
+print(len(activations))
 #%%
 tst_idx = [0,10,20,30,49]
 plt.figure(figsize=(20, 4))
