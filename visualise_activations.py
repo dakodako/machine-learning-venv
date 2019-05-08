@@ -57,7 +57,7 @@ print(len(layer_outputs))
 activation_model = models.Model(inputs = model.input, outputs = layer_outputs)
 activations = activation_model.predict(test_img_tensor)
 print(len(activations))
-
+'''
 #%%
 layer_names = []
 for layer in model.layers[:36]:
@@ -95,3 +95,4 @@ for layer_name, layer_activation in zip(layer_names, activations):
         plt.imshow(display_grid, aspect='auto',cmap='gray')
         plt.show()
         fig.savefig(figname, dpi=fig.dpi)
+'''
