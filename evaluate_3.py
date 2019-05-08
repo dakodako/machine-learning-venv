@@ -57,7 +57,7 @@ print(test_img_tensor.shape)
 pred = model.predict(test_img_tensor)
 print(pred.shape)
 #%%
-layer_outputs = [layer.output for layer in model.layers[:36]]
+layer_outputs = [layer.output for layer in model.layers[:8]]
 print(len(layer_outputs))
 #%%
 
