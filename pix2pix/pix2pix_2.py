@@ -146,7 +146,8 @@ class Pix2Pix():
         self.dataset_name = 'p2m2_test'
         self.data_loader = DataLoader(dataset_name = self.dataset_name, img_res = (self.img_rows, self.img_cols))
         # calculate output shape of D (PatchGAN)
-        patch = int(self.img_rows/8**2) # was 4 
+        patch = int(self.img_rows/4**2) # was 4 
+        patch = int(self.img_rows/8**2)
         #print(patch)
         self.disc_patch = (patch, patch, 1)
 
@@ -158,9 +159,9 @@ class Pix2Pix():
         #optimizer = RMSprop(0.01)
         # build and compile the discriminator
         self.discriminator = self.build_discriminator()
-        self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
+        #self.discriminator.compile(loss = 'mse', optimizer = optimizer, metrics = ['accuracy'])
         #self.discriminator.summary()
-        #self.discriminator.compile(loss = 'binary_crossentropy', optimizer = optimizer, metrics = ['accuracy'])
+        self.discriminator.compile(loss = 'binary_crossentropy', optimizer = optimizer)
         # build the generator
         self.generator = self.build_generator()
         #self.generator.summary()
@@ -262,10 +263,10 @@ class Pix2Pix():
         d2 = d_layer(d1, self.df*2)
         d3 = d_layer(d2, self.df*4)
         d4 = d_layer(d3, self.df*8)
-        d5 = d_layer(d4, self.df*8)
-        d6 = d_layer(d5, self.df*8)
-        validity = Conv2D(1, kernel_size = 4, strides = 1, padding = 'same')(d6)
-
+        #d5 = d_layer(d4, self.df*8)
+        #d6 = d_layer(d5, self.df*8)
+        #validity = Conv2D(1, kernel_size = 4, strides = 1, padding = 'same')(d6)
+        validity = Conv2D(1, kernel_size = 4, strides = 1, padding = 'same')(d4)
         return Model([inp, tar], validity)
     def train(self, epochs, batch_size=1, sample_interval=50):
         
@@ -301,18 +302,18 @@ class Pix2Pix():
                 self.write_log(self.callback, self.train_names,g_loss, batch_i)
                 elapsed_time = datetime.datetime.now() - start_time
                 # Plot the progress
-                print ("[Epoch %d/%d] [Batch %d/%d] [D loss: %f, acc: %3d%%] [G loss: %f] time: %s" % (epoch, epochs,
+                print ("[Epoch %d/%d] [Batch %d/%d] [D real loss: %f, D fake loss: %f] [G loss: %f] time: %s" % (epoch, epochs,
                                                                         batch_i, self.data_loader.n_batches,
-                                                                        d_loss[0], 100*d_loss[1],
+                                                                        d_loss_real, d_loss_fake,
                                                                         g_loss[0],
                                                                         elapsed_time))
 
                 # If at save interval => save generated image samples
                 if batch_i % sample_interval == 0:
                     self.sample_images(epoch, batch_i)
-        self.discriminator.save('D.h5')
-        self.generator.save('G.h5')
-        self.combined.save('combined.h5')
+        #self.discriminator.save('D.h5')
+        #self.generator.save('G.h5')
+        #self.combined.save('combined.h5')
     def sample_images(self, epoch, batch_i):
         os.makedirs('images_patch_8/%s' % self.dataset_name, exist_ok=True)
         r, c = 3, 3 # row and col
