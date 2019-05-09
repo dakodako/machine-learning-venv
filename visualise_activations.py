@@ -60,7 +60,7 @@ print(len(activations))
 
 #%%
 layer_names = []
-for layer in model.layers[:36]:
+for layer in model.layers[:59]:
     layer_names.append(layer.name)
 
 images_per_row = 16
