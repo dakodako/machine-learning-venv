@@ -39,7 +39,7 @@ def open_images(filepath):
     return images
 
 #%%
-model = load_model('autoencoder2_petra3.h5')
+model = load_model('autoencoder2_petra4.h5')
 model.summary()
 #%%
 print(len(model.layers))
@@ -49,23 +49,23 @@ filepath_test_ground = 'MP2RAGE2/*'
 test_X = open_images(filepath_test_X)
 test_ground = open_images(filepath_test_ground)
 print(test_X.shape)
-#%%
-test_img = test_X[10,:,:,:]
-test_img_tensor = np.expand_dims(test_img, axis = 0)
-print(test_img_tensor.shape)
-#%%
-pred = model.predict(test_img_tensor)
-print(pred.shape)
-#%%
-layer_outputs = [layer.output for layer in model.layers[:8]]
-print(len(layer_outputs))
-#%%
+pred = model.predict(test_X)
 
-activation_model = models.Model(inputs = model.input, outputs = layer_outputs)
-activations = activation_model.predict(test_img_tensor)
-print(len(activations))
 #%%
 tst_idx = [0,10,20,30,49]
+#%%
+fig, (ax1, ax2, ax3,ax4,ax5) = plt.subplots(figsize=(13, 3), ncols=5)
+pos = ax1.imshow(np.abs(pred[tst_idx[0], ..., 0]-test_ground[tst_idx[0], ..., 0]), interpolation='none')
+fig.colorbar(pos, ax=ax1)
+pos = ax2.imshow(np.abs(pred[tst_idx[1], ..., 0]-test_ground[tst_idx[1], ..., 0]), interpolation='none')
+fig.colorbar(pos, ax=ax2)
+pos = ax3.imshow(np.abs(pred[tst_idx[2], ..., 0]-test_ground[tst_idx[2], ..., 0]), interpolation='none')
+fig.colorbar(pos, ax=ax3)
+pos = ax4.imshow(np.abs(pred[tst_idx[3], ..., 0]-test_ground[tst_idx[3], ..., 0]), interpolation='none')
+fig.colorbar(pos, ax=ax4)
+pos = ax5.imshow(np.abs(pred[tst_idx[4], ..., 0]-test_ground[tst_idx[4], ..., 0]), interpolation='none')
+fig.colorbar(pos, ax=ax5)
+#%%
 plt.figure(figsize=(20, 4))
 print("Test Images inputs")
 for i in range(5):
@@ -85,6 +85,13 @@ print("Reconstruction of Test Images")
 for i in range(5):
     plt.subplot(1, 5, i+1)
     plt.imshow(pred[tst_idx[i], ..., 0], cmap='gray')  
+plt.show()
+
+plt.figure(figsize=(20, 4))
+print("Error of Test Images")
+for i in range(5):
+    fig = plt.subplot(1, 5, i+1)
+    plt.imshow(np.abs(pred[tst_idx[i], ..., 0]-test_ground[tst_idx[i], ..., 0]))  
 plt.show()
 
 #%%
