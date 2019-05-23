@@ -11,6 +11,9 @@ from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+# just want to test whether if these packages are available
+from keras.layers.advanced_activations import LeakyReLU
+from keras_contrib.layers.normalization.instancenormalization import InputSpec
 from keras import backend as K
 
 batch_size = 128

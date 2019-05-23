@@ -10,8 +10,31 @@ from keras.callbacks import ModelCheckpoint
 from keras.optimizers import Adadelta, RMSprop,SGD,Adam
 from keras import regularizers
 from keras import backend as K
-import open_and_view_nii_images_functions
-from open_and_view_nii_images_functions import extract_a_slice, open_image, open_images
+from glob import glob
+#import open_and_view_nii_images_functions
+#from open_and_view_nii_images_functions import extract_a_slice, open_image, open_images
+#%%
+from PIL import Image
+#%%
+img1 = Image.open('imagenet/ILSVRC2011_val_00000005.JPEG').convert('LA')
+#%%
+plt.imshow(np.squeeze(np.array(img1)))
+#%%
+img2 = np.array(img1)
+plt.imshow(np.squeeze(img2[:,:,0]))
+#%%
+img2_gray = np.squeeze(img2[:,:,0])
+#%%
+(w,h )= img2_gray.shape
+m_w = int(w/2)
+m_h = int(h/2)
+#%%
+img2_cropped = np.zeros(shape = (256,256))
+img2_cropped = img2_gray[(m_w - 128):(m_w + 128), (m_h - 128):( m_h + 128)]
+#%%
+plt.imshow(img2_cropped)
+#%%
+plt.imshow(img2_gray)
 #%%
 filepath = '/Users/chid/machine-learning-venv/dataset/T1/*'
 filename = '/Users/chid/machine-learning-venv/dataset/T1/943862_T1w_restore.1.60.nii.gz'
@@ -25,16 +48,72 @@ s = extract_a_slice(0,img)
 s = s.reshape((s.shape[0],s.shape[1]))
 print(s.shape)
 #%%
+
+#%%
+def read_images(dir):
+    path = glob(dir)
+    imgs = []
+
+    for i in range(len(path)):
+        
+        img = np.array(Image.open(path[i]).convert('LA'))
+        img_gray = np.squeeze(img[:,:,0])
+        (w,h )= img_gray.shape
+        if w < 256 or h < 256:
+            img = Image.open(path[i]).convert('LA')
+            img = img.resize((256,256))
+            img = np.array(img)
+            img = np.squeeze(img[:,:,0])
+            imgs.append(img)
+        else:
+            m_w = int(w/2)
+            m_h = int(h/2)
+            img_cropped = np.zeros(shape = (256,256))
+            img_cropped = img_gray[(m_w - 128):(m_w + 128), (m_h - 128):( m_h + 128)]
+            imgs.append(img_cropped)
+    imgs = np.array(imgs)
+    return imgs
+#%%
+def read_imgs_in_freq(dir):
+    path = glob(dir)
+    imgs_f = []
+    for i in range(len(path)):
+        img = np.array(Image.open(path[i]).convert('LA'))
+        img_gray = np.squeeze(img[:,:,0])
+        (w,h )= img_gray.shape
+        if w < 256 or h < 256:
+            img = Image.open(path[i]).convert('LA')
+            img_cropped = img.resize((256,256))
+            img_cropped = np.array(img_cropped)
+            img_cropped = np.squeeze(img_cropped[:,:,0])
+            
+            #imgs.append(img)
+        else:
+            m_w = int(w/2)
+            m_h = int(h/2)
+            img_cropped = np.zeros(shape = (256,256))
+            img_cropped = img_gray[(m_w - 128):(m_w + 128), (m_h - 128):( m_h + 128)]
+        img_freq = to_freq_space_2d(img_cropped)
+        imgs_f.append(img_freq)
+    imgs_f = np.array(imgs_f)
+    return imgs_f
+        
+#%%
+dir = 'imagenet/*'
+imgs_freq = read_imgs_in_freq(dir)
+#%%
+print(imgs_freq.shape)
+#%%
 def to_freq_space_volume(volume):
     # a volume has a shape of [number of slices, x, y, channels]
     v_freq = []
     return v_freq
-
+#%%
 def to_freq_space_2d(img):
     """ Performs FFT of an image
     :param img: input 2D image
     :return: Frequency-space data of the input image, third dimension (size: 2)
-    contains real ans imaginary part
+    contains real and imaginary part
     """
     
     img_f = np.fft.fft2(img)  # FFT
@@ -45,7 +124,7 @@ def to_freq_space_2d(img):
 
     return img_real_imag
 #%%
-img_freq = to_freq_space_2d(s)
+img_freq = to_freq_space_2d(img2_cropped)
 print(img_freq.shape)
 
 #%%
@@ -83,6 +162,8 @@ print(imgs_freq.shape) #(612, 113, 113, 2)
 
 #%%
 n = imgs_freq.shape[1]
+#%%
+n = 256
 inChannel = 2
 m1 = 32
 m2 = 64
