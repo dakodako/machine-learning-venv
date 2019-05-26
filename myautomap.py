@@ -1,3 +1,4 @@
+#%%
 import numpy as np 
 import os
 from matplotlib import pyplot as plt 
@@ -11,6 +12,7 @@ from keras import backend as K
 from glob import glob
 from PIL import Image
 
+#%%
 def read_images(dir):
     path = glob(dir)
     imgs = []
